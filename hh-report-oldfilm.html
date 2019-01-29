@@ -1,0 +1,36 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="hh-report-oldfilm">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+  </template>
+
+  <script>
+    /**
+     * `hh-report-oldfilm`
+     * oldfilm report
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class HhReportOldfilm extends Polymer.Element {
+      static get is() { return 'hh-report-oldfilm'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'hh-report-oldfilm'
+          }
+        };
+      }
+    }
+
+    window.customElements.define(HhReportOldfilm.is, HhReportOldfilm);
+  </script>
+</dom-module>
