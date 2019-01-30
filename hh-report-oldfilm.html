@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
+<link rel="import" href="../vaadin-context-menu/vaadin-context-menu.html">
 
 <dom-module id="hh-report-oldfilm">
     <template>
@@ -42,7 +43,7 @@
                 outline: none !important;
                 font-size: 14px;
                 line-height: 1.5em;
-                --iron-autogrow-textarea:{
+                --iron-autogrow-textarea: {
                     padding: 10px;
                 }
             }
@@ -70,7 +71,8 @@
                             <input class="class-oldfilm-title" id="oldfilmTitle" value="{{item.title}}" readonly/>
                         </div>
                         <div class="class-old-report-context" style="height: calc(100% - 32px);">
-                            <iron-autogrow-textarea class="class-old-report-textarea" id="oldfilmReport" value="{{item.report}}" readonly></iron-autogrow-textarea>
+                            <iron-autogrow-textarea class="class-old-report-textarea" id="oldfilmReport"
+                                                    value="{{item.report}}" readonly></iron-autogrow-textarea>
                         </div>
                     </div>
                 </template>
@@ -88,6 +90,8 @@
          */
         (function () {
             let _this = this;
+            let g_oldFilmLIst = new Array();
+            let oldfilm = new Object();
 
             class HhReportOldfilm extends Polymer.Element {
                 static get is() {
@@ -119,14 +123,31 @@
                     let conclusion = "TEST CONCLUSION";
                     let recommendation = "TEST RECOMMENDATION";
                     let report = "STUDY DESCRIPTION" + "\n" + studyDesc + "\n\n" + "FINDING" + "\n" + finding + "\n\n" + "CONCLUSION" + "\n" + conclusion + "\n\n" + "RECOMMENDATION" + "\n" + recommendation;
-                    // let report ="<font-weight: bold;>"+"STUDY DESCRIPTION"+"/> \n"+studyDesc+"\n\n <style='font-weight: bold;'>"+"FINDING" + "/>\n" + finding + "\n\n<style='font-weight: bold;'>" + "CONCLUSION" + "/>\n" + conclusion + "\n\n<style='font-weight: bold;'>" + "RECOMMENDATION" + "/>\n" + recommendation;
 
-                    for (let i = 0; i < 5; i++) {
-                        let oldfilm = new Object();
-                        oldfilm.title = title;
-                        oldfilm.report = report;
-                        this.oldfilm.push(oldfilm);
+                    if(g_oldFilmLIst.length > 0){
+                        for(let i=0; i<g_oldFilmLIst.length; i++){
+                            oldfilm.title = g_oldFilmLIst.title;;
+                            oldfilm.report = g_oldFilmLIst.report.report;
+                            this.oldfilm.push(oldfilm);
+                        }
+                    }else{
+                        for (let i = 0; i < 5; i++) {
+                            oldfilm.title = title;
+                            oldfilm.report = report;
+                            this.oldfilm.push(oldfilm);
+                        }
                     }
+                }
+                setOldFilmOpinionList(oldFilmList){
+                    /*
+                        g_oldFilmLIst = {
+                            title = modality + " " + bodypart + " " + studyDate;
+                            report = "STUDY DESCRIPTION" + "\n" + studyDesc + "\n\n" + "FINDING" + "\n" + finding + "\n\n" + "CONCLUSION" + "\n" + conclusion + "\n\n" + "RECOMMENDATION" + "\n" + recommendation;
+                        }
+                    */
+                    console.log("test");
+                    console.log(oldFilmList);
+                    g_oldFilmLIst = oldFilmList;
                 }
             }
 
