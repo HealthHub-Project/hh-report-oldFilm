@@ -30,10 +30,6 @@
                 color: #aaaaaa;
             }
 
-            .class-old-report {
-                height: 25%;
-            }
-
             textarea {
                 height: calc(100% - 23px);
                 width: calc(100% - 20px);
@@ -46,13 +42,15 @@
                 font-size: 14px;
                 line-height: 1.5em;
             }
-            input{
+
+            input {
                 width: 100%;
                 font-size: 13px;
                 background-color: rgba(0, 0, 0, 0.10);
                 color: #aaa;
             }
-            .class-oldfilm-title{
+
+            .class-oldfilm-title {
                 width: 100%;
                 font-size: 13px;
                 background-color: rgba(0, 0, 0, 0.10);
@@ -64,14 +62,14 @@
             <dom-repeat items="[[oldfilm]]">
                 <template>
                     <div class="class-old-report">
-                    <div class="class-old-report-title">
-                        <input class="class-oldfilm-title" id="oldfilmTitle" value="{{item.title}}" readonly/>
-                    </div>
-                    <div class="class-old-report-context" style="height: calc(100% - 32px);">
-                    <textarea class="class-old-report-textarea" id="oldfilmReport" value="{{item.report}}"
+                        <div class="class-old-report-title">
+                            <input class="class-oldfilm-title" id="oldfilmTitle" value="{{item.title}}" readonly/>
+                        </div>
+                        <div class="class-old-report-context" style="height: calc(100% - 32px);">
+                    <textarea class="class-old-report-textarea" id="oldfilmReport" value="{{item.report}}"rows="5"
                               readonly>
                     </textarea>
-                    </div>
+                        </div>
                     </div>
                 </template>
             </dom-repeat>
@@ -99,12 +97,10 @@
                 }
 
                 static get properties() {
-                    return{
-                        oldfilm:{
-                            value(){
-                                return[
-
-                                ]
+                    return {
+                        oldfilm: {
+                            value() {
+                                return []
                             }
                         }
                     }
@@ -120,10 +116,10 @@
                     let finding = "TEST FINDING";
                     let conclusion = "TEST CONCLUSION";
                     let recommendation = "TEST RECOMMENDATION";
-                    let report ="STUDY DESCRIPTION"+"\n"+studyDesc+"\n\n"+"FINDING" + "\n" + finding + "\n\n" + "CONCLUSION" + "\n" + conclusion + "\n\n" + "RECOMMENDATION" + "\n" + recommendation;
+                    let report = "STUDY DESCRIPTION" + "\n" + studyDesc + "\n\n" + "FINDING" + "\n" + finding + "\n\n" + "CONCLUSION" + "\n" + conclusion + "\n\n" + "RECOMMENDATION" + "\n" + recommendation;
                     // let report ="<font-weight: bold;>"+"STUDY DESCRIPTION"+"/> \n"+studyDesc+"\n\n <style='font-weight: bold;'>"+"FINDING" + "/>\n" + finding + "\n\n<style='font-weight: bold;'>" + "CONCLUSION" + "/>\n" + conclusion + "\n\n<style='font-weight: bold;'>" + "RECOMMENDATION" + "/>\n" + recommendation;
 
-                    for(let i=0; i<5; i++){
+                    for (let i = 0; i < 5; i++) {
                         let oldfilm = new Object();
                         oldfilm.title = title;
                         oldfilm.report = report;
