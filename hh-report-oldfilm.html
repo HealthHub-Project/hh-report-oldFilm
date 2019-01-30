@@ -114,26 +114,10 @@
 
                 ready() {
                     super.ready();
-                    let modality = "DX";
-                    let bodypart = "CHEST";
-                    let studyDesc = "Chest without Breast, Axilla US";
-                    let studyDate = "2018-08-03 14:36:23";
-                    let title = modality + " " + bodypart + " " + studyDate;
-                    let finding = "TEST FINDING";
-                    let conclusion = "TEST CONCLUSION";
-                    let recommendation = "TEST RECOMMENDATION";
-                    let report = "STUDY DESCRIPTION" + "\n" + studyDesc + "\n\n" + "FINDING" + "\n" + finding + "\n\n" + "CONCLUSION" + "\n" + conclusion + "\n\n" + "RECOMMENDATION" + "\n" + recommendation;
-
-                    if(g_oldFilmLIst.length > 0){
-                        for(let i=0; i<g_oldFilmLIst.length; i++){
-                            oldfilm.title = g_oldFilmLIst.title;;
+                    if(g_oldFilmLIst.length > 0) {
+                        for (let i = 0; i < g_oldFilmLIst.length; i++) {
+                            oldfilm.title = g_oldFilmLIst.title;
                             oldfilm.report = g_oldFilmLIst.report.report;
-                            this.oldfilm.push(oldfilm);
-                        }
-                    }else{
-                        for (let i = 0; i < 5; i++) {
-                            oldfilm.title = title;
-                            oldfilm.report = report;
                             this.oldfilm.push(oldfilm);
                         }
                     }
