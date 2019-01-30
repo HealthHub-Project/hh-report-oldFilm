@@ -114,6 +114,12 @@
 
                 ready() {
                     super.ready();
+                }
+                setOldFilmOpinionList(oldFilmList){
+                    console.log("test");
+                    console.log(oldFilmList);
+
+                    g_oldFilmLIst = oldFilmList;
                     if(g_oldFilmLIst.length > 0) {
                         for (let i = 0; i < g_oldFilmLIst.length; i++) {
                             oldfilm.title = g_oldFilmLIst.title;
@@ -121,17 +127,6 @@
                             this.oldfilm.push(oldfilm);
                         }
                     }
-                }
-                setOldFilmOpinionList(oldFilmList){
-                    /*
-                        g_oldFilmLIst = {
-                            title = modality + " " + bodypart + " " + studyDate;
-                            report = "STUDY DESCRIPTION" + "\n" + studyDesc + "\n\n" + "FINDING" + "\n" + finding + "\n\n" + "CONCLUSION" + "\n" + conclusion + "\n\n" + "RECOMMENDATION" + "\n" + recommendation;
-                        }
-                    */
-                    console.log("test");
-                    console.log(oldFilmList);
-                    g_oldFilmLIst = oldFilmList;
                 }
             }
 
