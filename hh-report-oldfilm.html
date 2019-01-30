@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
 
 <dom-module id="hh-report-oldfilm">
     <template>
@@ -30,7 +31,7 @@
                 color: #aaaaaa;
             }
 
-            textarea {
+            iron-autogrow-textarea {
                 height: calc(100% - 23px);
                 width: calc(100% - 20px);
                 background-color: rgba(0, 0, 0, 0.10);
@@ -66,9 +67,7 @@
                             <input class="class-oldfilm-title" id="oldfilmTitle" value="{{item.title}}" readonly/>
                         </div>
                         <div class="class-old-report-context" style="height: calc(100% - 32px);">
-                    <textarea class="class-old-report-textarea" id="oldfilmReport" value="{{item.report}}"rows="7"
-                              readonly>
-                    </textarea>
+                            <iron-autogrow-textarea class="class-old-report-textarea" id="oldfilmReport" value="{{item.report}}" readonly></iron-autogrow-textarea>
                         </div>
                     </div>
                 </template>

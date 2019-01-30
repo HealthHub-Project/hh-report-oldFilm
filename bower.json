@@ -3,7 +3,8 @@
   "description": "oldfilm report",
   "main": "hh-report-oldfilm.html",
   "dependencies": {
-    "polymer": "Polymer/polymer#^2.0.0"
+    "polymer": "Polymer/polymer#^2.0.0",
+    "iron-autogrow-textarea": "PolymerElements/iron-autogrow-textarea#2.2.0"
   },
   "devDependencies": {
     "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^2.0.0",
