@@ -64,19 +64,17 @@
             }
         </style>
         <div class="container">
-            <dom-repeat items="[[oldfilm]]">
-                <template>
-                    <div class="class-old-report">
-                        <div class="class-old-report-title">
-                            <input class="class-oldfilm-title" id="oldfilmTitle" value="{{item.title}}" readonly/>
-                        </div>
-                        <div class="class-old-report-context" style="height: calc(100% - 32px);">
-                            <iron-autogrow-textarea class="class-old-report-textarea" id="oldfilmReport"
-                                                    value="{{item.report}}" readonly></iron-autogrow-textarea>
-                        </div>
+            <template is="dom-repeat" items="{{oldfilm}}">
+                <div class="class-old-report">
+                    <div class="class-old-report-title">
+                        <input class="class-oldfilm-title" id="oldfilmTitle" value="{{item.title}}" readonly/>
                     </div>
-                </template>
-            </dom-repeat>
+                    <div class="class-old-report-context" style="height: calc(100% - 32px);">
+                        <iron-autogrow-textarea class="class-old-report-textarea" id="oldfilmReport"
+                                                value="{{item.report}}" readonly></iron-autogrow-textarea>
+                    </div>
+                </div>
+            </template>
         </div>
     </template>
     <script>
@@ -88,8 +86,6 @@
          * @polymer
          */
         (function () {
-            let g_oldFilmLIst = new Array();
-            let oldfilm = new Object();
 
             class HhReportOldfilm extends Polymer.Element {
                 static get is() {
@@ -103,8 +99,28 @@
                 static get properties() {
                     return {
                         oldfilm: {
-                            value() {
-                                return []
+                            type: Array,
+                            value: {
+                                title: {
+                                    type: String,
+                                    value: ""
+                                },
+                                report: {
+                                    type: String,
+                                    value: ""
+                                },
+                                finding: {
+                                    type: String,
+                                    values: ""
+                                },
+                                conclusion: {
+                                    type: String,
+                                    values: ""
+                                },
+                                recommendation: {
+                                    type: String,
+                                    values: ""
+                                }
                             }
                         }
                     }
@@ -112,18 +128,11 @@
 
                 ready() {
                     super.ready();
+                    this.init();
                 }
 
-                setOldFilmOpinionList(oldFilmList) {
-                    g_oldFilmLIst = oldFilmList;
-                    if (g_oldFilmLIst.length > 0) {
-                        this.oldfilm = new Array();
-                        for (let i = 0; i < g_oldFilmLIst.length; i++) {
-                            oldfilm.title = g_oldFilmLIst[i].title;
-                            oldfilm.report = g_oldFilmLIst[i].report;
-                            this.oldfilm.push(oldfilm);
-                        }
-                    }
+                init(){
+                    this.oldfilm = new Array();
                 }
             }
 
