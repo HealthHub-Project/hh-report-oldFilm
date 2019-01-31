@@ -86,10 +86,8 @@
          *
          * @customElement
          * @polymer
-         * @demo demo/index.html
          */
         (function () {
-            let _this = this;
             let g_oldFilmLIst = new Array();
             let oldfilm = new Object();
 
@@ -115,15 +113,14 @@
                 ready() {
                     super.ready();
                 }
-                setOldFilmOpinionList(oldFilmList){
-                    console.log("test");
-                    console.log(oldFilmList);
 
+                setOldFilmOpinionList(oldFilmList) {
                     g_oldFilmLIst = oldFilmList;
-                    if(g_oldFilmLIst.length > 0) {
+                    if (g_oldFilmLIst.length > 0) {
+                        this.oldfilm = new Array();
                         for (let i = 0; i < g_oldFilmLIst.length; i++) {
-                            oldfilm.title = g_oldFilmLIst.title;
-                            oldfilm.report = g_oldFilmLIst.report;
+                            oldfilm.title = g_oldFilmLIst[i].title;
+                            oldfilm.report = g_oldFilmLIst[i].report;
                             this.oldfilm.push(oldfilm);
                         }
                     }
