@@ -62,24 +62,9 @@
                 color: #aaa;
                 border: 0px;
             }
-
         </style>
         <div class="container">
-            <vaadin-context-menu id="contextMenu">
-            <template>
-                <vaadin-list-box>
-                    <vaadin-item id="listSort" on-click="sort">Reverse Sort</vaadin-item>
-                    <div class="menu-separator"></div>
-                    <vaadin-item id="pasteAll" on-click="allPaste">All Paste</vaadin-item>
-                    <div class="menu-separator"></div>
-                    <vaadin-item id="pasteFinding" on-click="fPaste">Finding Paste</vaadin-item>
-                    <div class="menu-separator"></div>
-                    <vaadin-item id="pasteConclusion" on-click="cPaste">Conclusion Paste</vaadin-item>
-                    <div class="menu-separator"></div>
-                    <vaadin-item id="pasteRecommendation" on-click="rPaste">Recommendation Paste</vaadin-item>
-                </vaadin-list-box>
-            </template>
-            <template is="dom-repeat" items="{{oldfilm}}" id="oldFilmReport">
+            <template is="dom-repeat" items="{{oldfilm}}">
                 <div class="class-old-report">
                     <div class="class-old-report-title">
                         <input class="class-oldfilm-title" id="oldfilmTitle" value="{{item.title}}" readonly/>
@@ -90,8 +75,6 @@
                     </div>
                 </div>
             </template>
-
-            </vaadin-context-menu>
         </div>
     </template>
     <script>
@@ -103,8 +86,7 @@
          * @polymer
          */
         (function () {
-            let _this = this;
-            let g_reportList = new Array();
+
             class HhReportOldfilm extends Polymer.Element {
                 static get is() {
                     return 'hh-report-oldfilm';
@@ -147,80 +129,11 @@
                 ready() {
                     super.ready();
                     this.init();
-                    // this.setTest();
-                }
-
-
-                setTest(){
-                    let modality = "DX";
-                    let bodypart = "CHEST";
-                    let studyDesc = "Chest without Breast, Axilla US";
-                    let studyDate = "2018-08-03 14:36:23";
-                    let title = modality + " " + bodypart + " " + studyDate;
-                    let finding = "TEST FINDING";
-                    let conclusion = "TEST CONCLUSION";
-                    let recommendation = "TEST RECOMMENDATION";
-                    let report = "STUDY DESCRIPTION" + "\n" + studyDesc + "\n\n" + "FINDING" + "\n" + finding + "\n\n" + "CONCLUSION" + "\n" + conclusion + "\n\n" + "RECOMMENDATION" + "\n" + recommendation;
-
-                    let oldfilmList = new Array();
-                    let cnt = 0;
-                    for (let i = 0; i < 5; i++) {
-                        let oldfilm = new Object();
-                        oldfilm.title = cnt+" "+title;
-                        oldfilm.report = report;
-                        oldfilmList.push(oldfilm);
-                        cnt++;
-                        if(cnt == 5){
-                            this.oldfilm = oldfilmList;
-                            g_reportList = oldfilmList;
-                        }
-                    }
                 }
 
                 init(){
                     this.oldfilm = new Array();
                 }
-
-                sort(){
-                    // console.log(g_reportList);
-                    let oldfilmList = new Array();
-                    for(let i=g_reportList.length -1; i>=0; i--){
-                        let oldfilm = new Object();
-                        oldfilm = g_reportList[i];
-                        oldfilmList.push(oldfilm);
-                        if(i == 0){
-                            this.oldfilm = oldfilmList;
-                            g_reportList = oldfilmList;
-                            // console.log(g_reportList);
-                        }
-                    }
-                }
-
-                allPaste(){
-                    console.log("all paste");
-                    let contextMenu = this.$.contextMenu;
-                    console.log(contextMenu.renderer);
-
-                }
-
-                fPaste(){
-                    console.log("finding paste");
-                    let contextMenu = this.$.contextMenu;
-                    console.log(contextMenu.renderer);
-                }
-
-                cPaste(){
-                    console.log("conclusion paste");
-                    let contextMenu = this.$.contextMenu;
-                    console.log(contextMenu.renderer);
-                }
-
-                rPaste(){
-                    console.log("recommendation paste");
-                    let contextMenu = this.$.contextMenu;
-                    console.log(contextMenu.renderer);
-                }
-
             }
 
             window.customElements.define(HhReportOldfilm.is, HhReportOldfilm);
