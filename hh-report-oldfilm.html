@@ -2,13 +2,19 @@
 <link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
 <link rel="import" href="../vaadin-context-menu/vaadin-context-menu.html">
 
-<dom-module id="hh-report-oldfilm">
+<dom-module id="hh-report-oldfilm" theme-for="vaadin-context-menu-overlay">
     <template>
         <style>
             :host {
                 display: block;
                 height: 100%;
                 width: 100%;
+
+                --contextMenu-background-color: #2d333f;
+                --contextMenu-border: 1px solid #4C5667;
+                --contextMenuItem-font-color: #aaaaaa;
+                --contextMenuItem-disabled-font-color: #4C5667;
+                --contextMenuItem-hover-color: #0087cb;
             }
 
             .container {
@@ -63,20 +69,49 @@
                 border: 0px;
             }
 
+            /*vaadin-context-menu*/
+            :host [part="content"] {
+                background-color : var(--contextMenu-background-color);
+                border : var(--contextMenu-border);
+                color: #aaaa;
+            }
+
+            /*vaadin-context-menu-overlay*/
+            :host [part="overlay"] {
+                width: 180px;
+                /*height: 273px;*/
+            }
+
+            /*vaadin-item*/
+            .contextMenu-item {
+                color: #aaa;
+                width: 180px;
+            }
+
+            .contextMenu-item:hover {
+                color: var(--contextMenuItem-hover-color);
+            }
+
+            .menu-separator {
+                border-bottom: 1px solid #4C5667;
+                margin-top: 5px;
+                margin-bottom: 5px;
+            }
+
         </style>
         <div class="container">
             <vaadin-context-menu id="contextMenu">
                 <template>
                     <vaadin-list-box>
-                        <vaadin-item id="listSort" on-click="sort">Reverse Sort</vaadin-item>
+                        <vaadin-item id="listSort" class="contextMenu-item"  on-click="sort">Reverse Sort</vaadin-item>
                         <div class="menu-separator"></div>
-                        <vaadin-item id="pasteAll" on-click="allPaste">All Paste</vaadin-item>
+                        <vaadin-item id="pasteAll" class="contextMenu-item"  on-click="allPaste">All Paste</vaadin-item>
                         <div class="menu-separator"></div>
-                        <vaadin-item id="pasteFinding" on-click="fPaste">Finding Paste</vaadin-item>
+                        <vaadin-item id="pasteFinding" class="contextMenu-item"  on-click="fPaste">Finding Paste</vaadin-item>
                         <div class="menu-separator"></div>
-                        <vaadin-item id="pasteConclusion" on-click="cPaste">Conclusion Paste</vaadin-item>
+                        <vaadin-item id="pasteConclusion" class="contextMenu-item"  on-click="cPaste">Conclusion Paste</vaadin-item>
                         <div class="menu-separator"></div>
-                        <vaadin-item id="pasteRecommendation" on-click="rPaste">Recommendation Paste</vaadin-item>
+                        <vaadin-item id="pasteRecommendation" class="contextMenu-item"  on-click="rPaste">Recommendation Paste</vaadin-item>
                     </vaadin-list-box>
                 </template>
                 <template is="dom-repeat" items="{{oldfilm}}" id="oldFilmReport">
@@ -103,7 +138,6 @@
          * @polymer
          */
         (function () {
-            let _this = this;
             let g_reportList = new Array();
             class HhReportOldfilm extends Polymer.Element {
                 static get is() {
@@ -150,6 +184,9 @@
                     // this.setTest();
                 }
 
+                setOldFilmList(oldfilmList){
+                    g_reportList = oldfilmList;
+                }
 
                 setTest(){
                     let modality = "DX";
