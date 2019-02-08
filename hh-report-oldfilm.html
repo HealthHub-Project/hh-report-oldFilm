@@ -4,19 +4,13 @@
 <link rel="import" href="../iron-selector/iron-selector.html">
 <link rel="import" href="../paper-checkbox/paper-checkbox.html">
 
-<dom-module id="hh-report-oldfilm" theme-for="vaadin-context-menu-overlay">
+<dom-module id="hh-report-oldfilm" >
     <template>
         <style>
             :host {
                 display: block;
                 height: 100%;
                 width: 100%;
-
-                --contextMenu-background-color: #2d3436;
-                --contextMenu-border: 1px solid #424242;
-                --contextMenuItem-font-color: #aaaaaa;
-                --contextMenuItem-disabled-font-color: #4C5667;
-                --contextMenuItem-hover-color: #0087cb;
             }
 
             .container {
@@ -71,11 +65,12 @@
                 border: 0px;
             }
 
-            /*vaadin-context-menu*/
+            vaadin-context-menu
             :host [part="content"] {
-                background-color : var(--contextMenu-background-color);
-                border : var(--contextMenu-border);
+                background-color : #2d3436;
+                border : 1px solid #424242;
                 color: #aaaa;
+                overflow: hidden;
             }
 
             :host [part="overlay"] {
@@ -83,12 +78,13 @@
             }
 
             .contextMenu-item {
+                color: #aaaa;
                 font-size: 14px;
                 padding: 0px;
             }
 
             .contextMenu-item:hover {
-                color: var(--contextMenuItem-hover-color);
+                color: #0087cb;
             }
 
             .menu-separator {
@@ -99,22 +95,22 @@
 
         </style>
         <div class="container">
-            <vaadin-context-menu class="contextMenu-container" selector$="oldFilmReport">
+            <vaadin-context-menu id="contextMenu" selector=".class-old-report">
                 <template>
-                    <vaadin-list-box>
-                        <vaadin-item id="listSort" class="contextMenu-item"  on-click="sort">Reverse Sort</vaadin-item>
+                    <paper-menu>
+                        <paper-itme list-item="[[target]]" class="contextMenu-item" on-click="sort">reverse Sort</paper-itme>
                         <div class="menu-separator"></div>
-                        <vaadin-item id="pasteAll" class="contextMenu-item"  on-click="allPaste">All Paste</vaadin-item>
+                        <paper-itme list-item="[[target]]" class="contextMenu-item" on-click="allPaste">all Paste</paper-itme>
                         <div class="menu-separator"></div>
-                        <vaadin-item id="pasteFinding" class="contextMenu-item"  on-click="fPaste">Finding Paste</vaadin-item>
+                        <paper-itme list-item="[[target]]" class="contextMenu-item" on-click="fPaste">finding Paste</paper-itme>
                         <div class="menu-separator"></div>
-                        <vaadin-item id="pasteConclusion" class="contextMenu-item"  on-click="cPaste">Conclusion Paste</vaadin-item>
+                        <paper-itme list-item="[[target]]" class="contextMenu-item" on-click="cPaste">conclusion Paste</paper-itme>
                         <div class="menu-separator"></div>
-                        <vaadin-item id="pasteRecommendation" class="contextMenu-item"  on-click="rPaste">Recommendation Paste</vaadin-item>
-                    </vaadin-list-box>
+                        <paper-itme list-item="[[target]]" class="contextMenu-item" on-click="rPaste">recommend Paste</paper-itme>
+                    </paper-menu>
                 </template>
                 <template is="dom-repeat" items="{{oldfilm}}" id="oldFilmReport">
-                    <div class="class-old-report">
+                    <div class="class-old-report" index="[[index]]">
                         <div class="class-old-report-title">
                             <input class="class-oldfilm-title" id="oldfilmTitle" value="{{item.title}}" readonly/>
                         </div>
@@ -137,6 +133,7 @@
          */
         (function () {
             let g_reportList = new Array();
+            let _this;
             class HhReportOldfilm extends Polymer.Element {
                 static get is() {
                     return 'hh-report-oldfilm';
@@ -144,6 +141,7 @@
 
                 constructor() {
                     super();
+                    _this = this;
                 }
 
                 static get properties() {
@@ -229,20 +227,62 @@
                     }
                 }
 
-                allPaste(){
-                    console.log("all paste");
+                allPaste(e){
+                    let param = new Object();
+                    let detail = new Object();
+                    let copiedOpinion = new Object();
+                    let menuItem = e.target;
+                    let listItem = menuItem.listItem;
+
+                    copiedOpinion.finding = listItem.children[1].children[0].__dataHost.__data.item.finding;
+                    copiedOpinion.conclusion = listItem.children[1].children[0].__dataHost.__data.item.conclusion;
+                    copiedOpinion.recommendation = listItem.children[1].children[0].__dataHost.__data.item.recommendation;
+                    detail.copiedOpinion = copiedOpinion;
+                    detail.sensitive = "all";
+                    param.detail = detail;
+                    _this.dispatchEvent(new CustomEvent('copiedOldfilmOpinion', param));
                 }
 
-                fPaste(){
-                    console.log("finding paste");
+                fPaste(e){
+                    let param = new Object();
+                    let detail = new Object();
+                    let copiedOpinion = new Object();
+                    let menuItem = e.target;
+                    let listItem = menuItem.listItem;
+
+                    copiedOpinion.finding = listItem.children[1].children[0].__dataHost.__data.item.finding;
+                    detail.copiedOpinion = copiedOpinion;
+                    detail.sensitive = "finding";
+                    param.detail = detail;
+                    _this.dispatchEvent(new CustomEvent('copiedOldfilmOpinion', param));
                 }
 
-                cPaste(){
-                    console.log("conclusion paste");
+                cPaste(e){
+                    let param = new Object();
+                    let detail = new Object();
+                    let copiedOpinion = new Object();
+                    let menuItem = e.target;
+                    let listItem = menuItem.listItem;
+
+                    copiedOpinion.conclusion = listItem.children[1].children[0].__dataHost.__data.item.conclusion;
+                    detail.copiedOpinion = copiedOpinion;
+                    detail.sensitive = "conclusion";
+                    param.detail = detail;
+                    _this.dispatchEvent(new CustomEvent('copiedOldfilmOpinion', param));
                 }
 
-                rPaste(){
-                    console.log("recommendation paste");
+                rPaste(e){
+                    let param = new Object();
+                    let detail = new Object();
+                    let copiedOpinion = new Object();
+                    let menuItem = e.target;
+                    let listItem = menuItem.listItem;
+
+                    copiedOpinion.recommendation = listItem.children[1].children[0].__dataHost.__data.item.recommendation;
+                    detail.copiedOpinion = copiedOpinion;
+                    detail.sensitive = "recommendation";
+                    param.detail = detail;
+                    _this.dispatchEvent(new CustomEvent('copiedOldfilmOpinion', param));
                 }
 
             }
