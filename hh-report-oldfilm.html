@@ -1,11 +1,7 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
-<!--<link rel="import" href="../vaadin-context-menu/vaadin-context-menu.html">-->
-<link rel="import" href="../iron-selector/iron-selector.html">
-<link rel="import" href="../paper-checkbox/paper-checkbox.html">
-<link rel="import" href="../paper-item/paper-item.html">
 
-<dom-module id="hh-report-oldfilm" >
+<dom-module id="hh-report-oldfilm">
     <template>
         <style>
             :host {
@@ -65,50 +61,21 @@
                 color: #aaa;
                 border: 0px;
             }
-
-            .menu-separator {
-                border-bottom: 1px solid #4C5667;
-                margin-top: 5px;
-                margin-bottom: 5px;
-            }
-
         </style>
         <div class="container">
-            <!--<vaadin-context-menu id="contextMenu" selector=".class-old-report">-->
-                <!--<template>-->
-                    <!--<paper-menu>-->
-                        <!--<paper-item list-item="[[target]]" class="contextMenu-item" on-click="allPaste">all Paste</paper-item>-->
-                        <!--<div class="menu-separator"></div>-->
-                        <!--<paper-item list-item="[[target]]" class="contextMenu-item" on-click="fPaste">finding Paste</paper-item>-->
-                        <!--<div class="menu-separator"></div>-->
-                        <!--<paper-item list-item="[[target]]" class="contextMenu-item" on-click="cPaste">conclusion Paste</paper-item>-->
-                        <!--<div class="menu-separator"></div>-->
-                        <!--<paper-item list-item="[[target]]" class="contextMenu-item" on-click="rPaste">recommend Paste</paper-item>-->
-                    <!--</paper-menu>-->
-                <!--</template>-->
-                <!--<template is="dom-repeat" items="{{oldfilm}}" id="oldFilmReport">-->
-                    <!--<div class="class-old-report" index="[[index]]">-->
-                        <!--<div class="class-old-report-title">-->
-                            <!--<input class="class-oldfilm-title" id="oldfilmTitle" value="{{item.title}}" readonly/>-->
-                        <!--</div>-->
-                        <!--<div class="class-old-report-context" style="height: calc(100% - 32px);">-->
-                            <!--<iron-autogrow-textarea class="class-old-report-textarea" id="oldfilmReport"-->
-                                                    <!--value="{{item.report}}" readonly></iron-autogrow-textarea>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</template>-->
-            <!--</vaadin-context-menu>-->
-            <template is="dom-repeat" items="{{oldfilm}}" id="oldFilmReport">
-                <div class="class-old-report">
-                    <div class="class-old-report-title">
-                        <input class="class-oldfilm-title" id="oldfilmTitle" value="{{item.title}}" readonly/>
+            <dom-repeat items="[[oldfilm]]">
+                <template>
+                    <div class="class-old-report">
+                        <div class="class-old-report-title">
+                            <input class="class-oldfilm-title" id="oldfilmTitle" value="{{item.title}}" readonly/>
+                        </div>
+                        <div class="class-old-report-context" style="height: calc(100% - 32px);">
+                            <iron-autogrow-textarea class="class-old-report-textarea" id="oldfilmReport"
+                                                    value="{{item.report}}" readonly></iron-autogrow-textarea>
+                        </div>
                     </div>
-                    <div class="class-old-report-context" style="height: calc(100% - 32px);">
-                        <iron-autogrow-textarea class="class-old-report-textarea" id="oldfilmReport"
-                                                value="{{item.report}}" readonly></iron-autogrow-textarea>
-                    </div>
-                </div>
-            </template>
+                </template>
+            </dom-repeat>
         </div>
     </template>
     <script>
@@ -120,7 +87,8 @@
          * @polymer
          */
         (function () {
-            let g_reportList = new Array();
+            let g_oldFilmLIst = new Array();
+            let oldfilm = new Object();
             let _this;
             class HhReportOldfilm extends Polymer.Element {
                 static get is() {
@@ -129,7 +97,6 @@
 
                 constructor() {
                     super();
-                    _this = this;
                 }
 
                 static get properties() {
@@ -164,38 +131,6 @@
 
                 ready() {
                     super.ready();
-                    // this.init();
-                    // this.setTest();
-                }
-
-                setOldFilmList(oldfilmList){
-                    g_reportList = oldfilmList;
-                }
-
-                setTest(){
-                    let modality = "DX";
-                    let bodypart = "CHEST";
-                    let studyDesc = "Chest without Breast, Axilla US";
-                    let studyDate = "2018-08-03 14:36:23";
-                    let title = modality + " " + bodypart + " " + studyDate;
-                    let finding = "TEST FINDING";
-                    let conclusion = "TEST CONCLUSION";
-                    let recommendation = "TEST RECOMMENDATION";
-                    let report = "STUDY DESCRIPTION" + "\n" + studyDesc + "\n\n" + "FINDING" + "\n" + finding + "\n\n" + "CONCLUSION" + "\n" + conclusion + "\n\n" + "RECOMMENDATION" + "\n" + recommendation;
-
-                    let oldfilmList = new Array();
-                    let cnt = 0;
-                    for (let i = 0; i < 5; i++) {
-                        let oldfilm = new Object();
-                        oldfilm.title = cnt+" "+title;
-                        oldfilm.report = report;
-                        oldfilmList.push(oldfilm);
-                        cnt++;
-                        if(cnt == 5){
-                            this.oldfilm = oldfilmList;
-                            g_reportList = oldfilmList;
-                        }
-                    }
                 }
 
                 init(){
@@ -215,64 +150,9 @@
                     }
                 }
 
-                allPaste(e){
-                    let param = new Object();
-                    let detail = new Object();
-                    let copiedOpinion = new Object();
-                    let menuItem = e.target;
-                    let listItem = menuItem.listItem;
-
-                    copiedOpinion.finding = listItem.children[1].children[0].__dataHost.__data.item.finding;
-                    copiedOpinion.conclusion = listItem.children[1].children[0].__dataHost.__data.item.conclusion;
-                    copiedOpinion.recommendation = listItem.children[1].children[0].__dataHost.__data.item.recommendation;
-                    detail.copiedOpinion = copiedOpinion;
-                    detail.sensitive = "all";
-                    param.detail = detail;
-                    _this.dispatchEvent(new CustomEvent('copiedOldfilmOpinion', param));
+                setOldFilmList(oldfilmList){
+                    g_reportList = oldfilmList;
                 }
-
-                fPaste(e){
-                    let param = new Object();
-                    let detail = new Object();
-                    let copiedOpinion = new Object();
-                    let menuItem = e.target;
-                    let listItem = menuItem.listItem;
-
-                    copiedOpinion.finding = listItem.children[1].children[0].__dataHost.__data.item.finding;
-                    detail.copiedOpinion = copiedOpinion;
-                    detail.sensitive = "finding";
-                    param.detail = detail;
-                    _this.dispatchEvent(new CustomEvent('copiedOldfilmOpinion', param));
-                }
-
-                cPaste(e){
-                    let param = new Object();
-                    let detail = new Object();
-                    let copiedOpinion = new Object();
-                    let menuItem = e.target;
-                    let listItem = menuItem.listItem;
-
-                    copiedOpinion.conclusion = listItem.children[1].children[0].__dataHost.__data.item.conclusion;
-                    detail.copiedOpinion = copiedOpinion;
-                    detail.sensitive = "conclusion";
-                    param.detail = detail;
-                    _this.dispatchEvent(new CustomEvent('copiedOldfilmOpinion', param));
-                }
-
-                rPaste(e){
-                    let param = new Object();
-                    let detail = new Object();
-                    let copiedOpinion = new Object();
-                    let menuItem = e.target;
-                    let listItem = menuItem.listItem;
-
-                    copiedOpinion.recommendation = listItem.children[1].children[0].__dataHost.__data.item.recommendation;
-                    detail.copiedOpinion = copiedOpinion;
-                    detail.sensitive = "recommendation";
-                    param.detail = detail;
-                    _this.dispatchEvent(new CustomEvent('copiedOldfilmOpinion', param));
-                }
-
             }
 
             window.customElements.define(HhReportOldfilm.is, HhReportOldfilm);
