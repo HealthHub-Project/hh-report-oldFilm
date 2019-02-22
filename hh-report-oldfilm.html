@@ -3,6 +3,7 @@
 <link rel="import" href="../vaadin-context-menu/vaadin-context-menu.html">
 <link rel="import" href="../iron-selector/iron-selector.html">
 <link rel="import" href="../paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../paper-item/paper-item.html">
 
 <dom-module id="hh-report-oldfilm" >
     <template>
@@ -98,13 +99,13 @@
             <vaadin-context-menu id="contextMenu" selector=".class-old-report">
                 <template>
                     <paper-menu>
-                        <paper-itme list-item="[[target]]" class="contextMenu-item" on-click="allPaste">all Paste</paper-itme>
+                        <paper-item list-item="[[target]]" class="contextMenu-item" on-click="allPaste">all Paste</paper-item>
                         <div class="menu-separator"></div>
-                        <paper-itme list-item="[[target]]" class="contextMenu-item" on-click="fPaste">finding Paste</paper-itme>
+                        <paper-item list-item="[[target]]" class="contextMenu-item" on-click="fPaste">finding Paste</paper-item>
                         <div class="menu-separator"></div>
-                        <paper-itme list-item="[[target]]" class="contextMenu-item" on-click="cPaste">conclusion Paste</paper-itme>
+                        <paper-item list-item="[[target]]" class="contextMenu-item" on-click="cPaste">conclusion Paste</paper-item>
                         <div class="menu-separator"></div>
-                        <paper-itme list-item="[[target]]" class="contextMenu-item" on-click="rPaste">recommend Paste</paper-itme>
+                        <paper-item list-item="[[target]]" class="contextMenu-item" on-click="rPaste">recommend Paste</paper-item>
                     </paper-menu>
                 </template>
                 <template is="dom-repeat" items="{{oldfilm}}" id="oldFilmReport">
@@ -174,8 +175,8 @@
 
                 ready() {
                     super.ready();
-                    this.init();
-                    // this.setTest();
+                    // this.init();
+                    this.setTest();
                 }
 
                 setOldFilmList(oldfilmList){
