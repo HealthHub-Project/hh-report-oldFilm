@@ -1,7 +1,11 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
+<link rel="import" href="../vaadin-context-menu/vaadin-context-menu.html">
+<link rel="import" href="../iron-selector/iron-selector.html">
+<link rel="import" href="../paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../paper-item/paper-item.html">
 
-<dom-module id="hh-report-oldfilm">
+<dom-module id="hh-report-oldfilm" >
     <template>
         <style>
             :host {
@@ -61,19 +65,61 @@
                 color: #aaa;
                 border: 0px;
             }
+
+            vaadin-context-menu
+            :host [part="content"] {
+                background-color : #2d3436;
+                border : 1px solid #424242;
+                color: #aaaa;
+                overflow: hidden;
+            }
+
+            :host [part="overlay"] {
+                width: 180px;
+            }
+
+            .contextMenu-item {
+                color: #aaaa;
+                font-size: 14px;
+                padding: 0px;
+            }
+
+            .contextMenu-item:hover {
+                color: #0087cb;
+            }
+
+            .menu-separator {
+                border-bottom: 1px solid #4C5667;
+                margin-top: 5px;
+                margin-bottom: 5px;
+            }
+
         </style>
         <div class="container">
-            <template is="dom-repeat" items="{{oldfilm}}" id="oldFilmReport">
-                <div class="class-old-report">
-                    <div class="class-old-report-title">
-                        <input class="class-oldfilm-title" id="oldfilmTitle" value="{{item.title}}" readonly/>
+            <vaadin-context-menu id="contextMenu" selector=".class-old-report">
+                <template>
+                    <paper-menu>
+                        <paper-item list-item="[[target]]" class="contextMenu-item" on-click="allPaste">all Paste</paper-item>
+                        <div class="menu-separator"></div>
+                        <paper-item list-item="[[target]]" class="contextMenu-item" on-click="fPaste">finding Paste</paper-item>
+                        <div class="menu-separator"></div>
+                        <paper-item list-item="[[target]]" class="contextMenu-item" on-click="cPaste">conclusion Paste</paper-item>
+                        <div class="menu-separator"></div>
+                        <paper-item list-item="[[target]]" class="contextMenu-item" on-click="rPaste">recommend Paste</paper-item>
+                    </paper-menu>
+                </template>
+                <template is="dom-repeat" items="{{oldfilm}}" id="oldFilmReport">
+                    <div class="class-old-report" index="[[index]]">
+                        <div class="class-old-report-title">
+                            <input class="class-oldfilm-title" id="oldfilmTitle" value="{{item.title}}" readonly/>
+                        </div>
+                        <div class="class-old-report-context" style="height: calc(100% - 32px);">
+                            <iron-autogrow-textarea class="class-old-report-textarea" id="oldfilmReport"
+                                                    value="{{item.report}}" readonly></iron-autogrow-textarea>
+                        </div>
                     </div>
-                    <div class="class-old-report-context" style="height: calc(100% - 32px);">
-                        <iron-autogrow-textarea class="class-old-report-textarea" id="oldfilmReport"
-                                                value="{{item.report}}" readonly></iron-autogrow-textarea>
-                    </div>
-                </div>
-            </template>
+                </template>
+            </vaadin-context-menu>
         </div>
     </template>
     <script>
@@ -86,6 +132,7 @@
          */
         (function () {
             let g_reportList = new Array();
+            let _this;
             class HhReportOldfilm extends Polymer.Element {
                 static get is() {
                     return 'hh-report-oldfilm';
@@ -93,6 +140,7 @@
 
                 constructor() {
                     super();
+                    _this = this;
                 }
 
                 static get properties() {
@@ -131,21 +179,8 @@
                     // this.setTest();
                 }
 
-                init(){
-                    this.oldfilm = new Array();
-                }
-
-                sort(){
-                    let oldfilmList = new Array();
-                    for(let i=g_reportList.length -1; i>=0; i--){
-                        let oldfilm = new Object();
-                        oldfilm = g_reportList[i];
-                        oldfilmList.push(oldfilm);
-                        if(i == 0){
-                            this.oldfilm = oldfilmList;
-                            g_reportList = oldfilmList;
-                        }
-                    }
+                setOldFilmList(oldfilmList){
+                    g_reportList = oldfilmList;
                 }
 
                 setTest(){
@@ -174,9 +209,81 @@
                     }
                 }
 
-                setOldFilmList(oldfilmList){
-                    g_reportList = oldfilmList;
+                init(){
+                    this.oldfilm = new Array();
                 }
+
+                sort(){
+                    let oldfilmList = new Array();
+                    for(let i=g_reportList.length -1; i>=0; i--){
+                        let oldfilm = new Object();
+                        oldfilm = g_reportList[i];
+                        oldfilmList.push(oldfilm);
+                        if(i == 0){
+                            this.oldfilm = oldfilmList;
+                            g_reportList = oldfilmList;
+                        }
+                    }
+                }
+
+                allPaste(e){
+                    let param = new Object();
+                    let detail = new Object();
+                    let copiedOpinion = new Object();
+                    let menuItem = e.target;
+                    let listItem = menuItem.listItem;
+
+                    copiedOpinion.finding = listItem.children[1].children[0].__dataHost.__data.item.finding;
+                    copiedOpinion.conclusion = listItem.children[1].children[0].__dataHost.__data.item.conclusion;
+                    copiedOpinion.recommendation = listItem.children[1].children[0].__dataHost.__data.item.recommendation;
+                    detail.copiedOpinion = copiedOpinion;
+                    detail.sensitive = "all";
+                    param.detail = detail;
+                    _this.dispatchEvent(new CustomEvent('copiedOldfilmOpinion', param));
+                }
+
+                fPaste(e){
+                    let param = new Object();
+                    let detail = new Object();
+                    let copiedOpinion = new Object();
+                    let menuItem = e.target;
+                    let listItem = menuItem.listItem;
+
+                    copiedOpinion.finding = listItem.children[1].children[0].__dataHost.__data.item.finding;
+                    detail.copiedOpinion = copiedOpinion;
+                    detail.sensitive = "finding";
+                    param.detail = detail;
+                    _this.dispatchEvent(new CustomEvent('copiedOldfilmOpinion', param));
+                }
+
+                cPaste(e){
+                    let param = new Object();
+                    let detail = new Object();
+                    let copiedOpinion = new Object();
+                    let menuItem = e.target;
+                    let listItem = menuItem.listItem;
+
+                    copiedOpinion.conclusion = listItem.children[1].children[0].__dataHost.__data.item.conclusion;
+                    detail.copiedOpinion = copiedOpinion;
+                    detail.sensitive = "conclusion";
+                    param.detail = detail;
+                    _this.dispatchEvent(new CustomEvent('copiedOldfilmOpinion', param));
+                }
+
+                rPaste(e){
+                    let param = new Object();
+                    let detail = new Object();
+                    let copiedOpinion = new Object();
+                    let menuItem = e.target;
+                    let listItem = menuItem.listItem;
+
+                    copiedOpinion.recommendation = listItem.children[1].children[0].__dataHost.__data.item.recommendation;
+                    detail.copiedOpinion = copiedOpinion;
+                    detail.sensitive = "recommendation";
+                    param.detail = detail;
+                    _this.dispatchEvent(new CustomEvent('copiedOldfilmOpinion', param));
+                }
+
             }
 
             window.customElements.define(HhReportOldfilm.is, HhReportOldfilm);
