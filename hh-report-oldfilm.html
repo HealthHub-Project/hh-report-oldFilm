@@ -63,19 +63,17 @@
             }
         </style>
         <div class="container">
-            <dom-repeat items="[[oldfilm]]">
-                <template>
-                    <div class="class-old-report">
-                        <div class="class-old-report-title">
-                            <input class="class-oldfilm-title" id="oldfilmTitle" value="{{item.title}}" readonly/>
-                        </div>
-                        <div class="class-old-report-context" style="height: calc(100% - 32px);">
-                            <iron-autogrow-textarea class="class-old-report-textarea" id="oldfilmReport"
-                                                    value="{{item.report}}" readonly></iron-autogrow-textarea>
-                        </div>
+            <template is="dom-repeat" items="{{oldfilm}}" id="oldFilmReport">
+                <div class="class-old-report">
+                    <div class="class-old-report-title">
+                        <input class="class-oldfilm-title" id="oldfilmTitle" value="{{item.title}}" readonly/>
                     </div>
-                </template>
-            </dom-repeat>
+                    <div class="class-old-report-context" style="height: calc(100% - 32px);">
+                        <iron-autogrow-textarea class="class-old-report-textarea" id="oldfilmReport"
+                                                value="{{item.report}}" readonly></iron-autogrow-textarea>
+                    </div>
+                </div>
+            </template>
         </div>
     </template>
     <script>
