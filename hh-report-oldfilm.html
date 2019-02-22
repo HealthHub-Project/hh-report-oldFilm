@@ -1,6 +1,6 @@
 <link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
-<link rel="import" href="../vaadin-context-menu/vaadin-context-menu.html">
+<!--<link rel="import" href="../vaadin-context-menu/vaadin-context-menu.html">-->
 <link rel="import" href="../iron-selector/iron-selector.html">
 <link rel="import" href="../paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../paper-item/paper-item.html">
@@ -96,30 +96,41 @@
 
         </style>
         <div class="container">
-            <vaadin-context-menu id="contextMenu" selector=".class-old-report">
-                <template>
-                    <paper-menu>
-                        <paper-item list-item="[[target]]" class="contextMenu-item" on-click="allPaste">all Paste</paper-item>
-                        <div class="menu-separator"></div>
-                        <paper-item list-item="[[target]]" class="contextMenu-item" on-click="fPaste">finding Paste</paper-item>
-                        <div class="menu-separator"></div>
-                        <paper-item list-item="[[target]]" class="contextMenu-item" on-click="cPaste">conclusion Paste</paper-item>
-                        <div class="menu-separator"></div>
-                        <paper-item list-item="[[target]]" class="contextMenu-item" on-click="rPaste">recommend Paste</paper-item>
-                    </paper-menu>
-                </template>
-                <template is="dom-repeat" items="{{oldfilm}}" id="oldFilmReport">
-                    <div class="class-old-report" index="[[index]]">
-                        <div class="class-old-report-title">
-                            <input class="class-oldfilm-title" id="oldfilmTitle" value="{{item.title}}" readonly/>
-                        </div>
-                        <div class="class-old-report-context" style="height: calc(100% - 32px);">
-                            <iron-autogrow-textarea class="class-old-report-textarea" id="oldfilmReport"
-                                                    value="{{item.report}}" readonly></iron-autogrow-textarea>
-                        </div>
+            <!--<vaadin-context-menu id="contextMenu" selector=".class-old-report">-->
+                <!--<template>-->
+                    <!--<paper-menu>-->
+                        <!--<paper-item list-item="[[target]]" class="contextMenu-item" on-click="allPaste">all Paste</paper-item>-->
+                        <!--<div class="menu-separator"></div>-->
+                        <!--<paper-item list-item="[[target]]" class="contextMenu-item" on-click="fPaste">finding Paste</paper-item>-->
+                        <!--<div class="menu-separator"></div>-->
+                        <!--<paper-item list-item="[[target]]" class="contextMenu-item" on-click="cPaste">conclusion Paste</paper-item>-->
+                        <!--<div class="menu-separator"></div>-->
+                        <!--<paper-item list-item="[[target]]" class="contextMenu-item" on-click="rPaste">recommend Paste</paper-item>-->
+                    <!--</paper-menu>-->
+                <!--</template>-->
+                <!--<template is="dom-repeat" items="{{oldfilm}}" id="oldFilmReport">-->
+                    <!--<div class="class-old-report" index="[[index]]">-->
+                        <!--<div class="class-old-report-title">-->
+                            <!--<input class="class-oldfilm-title" id="oldfilmTitle" value="{{item.title}}" readonly/>-->
+                        <!--</div>-->
+                        <!--<div class="class-old-report-context" style="height: calc(100% - 32px);">-->
+                            <!--<iron-autogrow-textarea class="class-old-report-textarea" id="oldfilmReport"-->
+                                                    <!--value="{{item.report}}" readonly></iron-autogrow-textarea>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</template>-->
+            <!--</vaadin-context-menu>-->
+            <template is="dom-repeat" items="{{oldfilm}}" id="oldFilmReport">
+                <div class="class-old-report" index="[[index]]">
+                    <div class="class-old-report-title">
+                        <input class="class-oldfilm-title" id="oldfilmTitle" value="{{item.title}}" readonly/>
                     </div>
-                </template>
-            </vaadin-context-menu>
+                    <div class="class-old-report-context" style="height: calc(100% - 32px);">
+                        <iron-autogrow-textarea class="class-old-report-textarea" id="oldfilmReport"
+                                                value="{{item.report}}" readonly></iron-autogrow-textarea>
+                    </div>
+                </div>
+            </template>
         </div>
     </template>
     <script>
@@ -176,7 +187,7 @@
                 ready() {
                     super.ready();
                     // this.init();
-                    this.setTest();
+                    // this.setTest();
                 }
 
                 setOldFilmList(oldfilmList){
