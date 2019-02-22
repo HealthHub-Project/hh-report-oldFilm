@@ -87,9 +87,7 @@
          * @polymer
          */
         (function () {
-            let g_oldFilmLIst = new Array();
-            let oldfilm = new Object();
-            let _this;
+            let g_reportList = new Array();
             class HhReportOldfilm extends Polymer.Element {
                 static get is() {
                     return 'hh-report-oldfilm';
@@ -131,6 +129,8 @@
 
                 ready() {
                     super.ready();
+                    // this.init();
+                    this.setTest();
                 }
 
                 init(){
@@ -144,6 +144,32 @@
                         oldfilm = g_reportList[i];
                         oldfilmList.push(oldfilm);
                         if(i == 0){
+                            this.oldfilm = oldfilmList;
+                            g_reportList = oldfilmList;
+                        }
+                    }
+                }
+
+                setTest(){
+                    let modality = "DX";
+                    let bodypart = "CHEST";
+                    let studyDesc = "Chest without Breast, Axilla US";
+                    let studyDate = "2018-08-03 14:36:23";
+                    let title = modality + " " + bodypart + " " + studyDate;
+                    let finding = "TEST FINDING";
+                    let conclusion = "TEST CONCLUSION";
+                    let recommendation = "TEST RECOMMENDATION";
+                    let report = "STUDY DESCRIPTION" + "\n" + studyDesc + "\n\n" + "FINDING" + "\n" + finding + "\n\n" + "CONCLUSION" + "\n" + conclusion + "\n\n" + "RECOMMENDATION" + "\n" + recommendation;
+
+                    let oldfilmList = new Array();
+                    let cnt = 0;
+                    for (let i = 0; i < 5; i++) {
+                        let oldfilm = new Object();
+                        oldfilm.title = cnt+" "+title;
+                        oldfilm.report = report;
+                        oldfilmList.push(oldfilm);
+                        cnt++;
+                        if(cnt == 5){
                             this.oldfilm = oldfilmList;
                             g_reportList = oldfilmList;
                         }
