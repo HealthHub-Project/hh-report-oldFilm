@@ -94,6 +94,40 @@
                 margin-bottom: 5px;
             }
 
+
+            .class-oldFilmReportSelected{
+                height: 25px;
+                width: 100%;
+                font-size: 13px;
+                color: #aaaaaa;
+                background-color: #282e38;
+                padding: 1px 0px 1px 0px;
+                display: flex;
+                flex-direction: row;
+            }
+
+
+            .checkBox-style{
+                font-size: 13px;
+                color: #aaaaaa;
+                --paper-checkbox-checked-color: #0087cb;
+                --paper-checkbox-label-color: #aaaaaa;
+                --paper-checkbox-unchecked-color: #4c5667;
+                padding: 3px;
+            }
+
+            .iconSortBtn{
+                margin: 0px 1px 0px 1px;
+                font-size: 13px;
+                color: #aaaaaa;
+            }
+
+            paper-icon-button {
+                width: 25px;
+                height: 100%;
+                padding: 5px;
+                color: #aaa;
+            }
         </style>
         <div class="container">
             <vaadin-context-menu id="contextMenu" selector=".class-old-report">
@@ -108,6 +142,14 @@
                         <paper-item list-item="[[target]]" class="contextMenu-item" on-click="rPaste">recommend Paste</paper-item>
                     </paper-menu>
                 </template>
+                <div class="class-oldFilmReportSelected" id="oldFilmSensitive" style="display: none">
+                    <iron-selector attr-for-selected="value" id="sensitive" selected-values="{{listSensitive}}" multi>
+                        <paper-checkbox value="modality" id="sensitiveModal" class="checkBox-style" noink>Modality</paper-checkbox>
+                        <paper-checkbox value="bodypart" id="sensitiveBody"  class="checkBox-style" noink>Bodypart</paper-checkbox>
+                    </iron-selector>
+                    <div id="fontAsc" on-click="ascSort" readonly><paper-icon-button id="iconAscending" noink icon="vaadin:chevron-down-small" title="oldListSort" class="iconSortBtn" ></paper-icon-button>Aescending</div>
+                    <div id="fontDsc" on-click="dscSort" readonly hidden="true"><paper-icon-button id="iconDescending" noink icon="vaadin:chevron-up-small" title="oldListSort" class="iconSortBtn" ></paper-icon-button>Descending</div>
+                </div>
                 <template is="dom-repeat" items="{{oldfilm}}" id="oldFilmReport">
                     <div class="class-old-report" index="[[index]]">
                         <div class="class-old-report-title">
@@ -132,6 +174,7 @@
          */
         (function () {
             let g_reportList = new Array();
+            let g_SelectedRow = new Object();
             let _this;
             class HhReportOldfilm extends Polymer.Element {
                 static get is() {
@@ -169,6 +212,9 @@
                                     values: ""
                                 }
                             }
+                        },
+                        listSensitive: {
+                            type: Array
                         }
                     }
                 }
@@ -177,11 +223,33 @@
                     super.ready();
                     this.init();
                     // this.setTest();
-                }
 
-                setOldFilmList(oldfilmList){
-                    g_reportList = oldfilmList;
-                }
+                    this.$.sensitive.addEventListener('selected-items-changed',function(e){
+                        let cnt =0;
+                        let params = new Object();
+                        let detail = new Object();
+                        if((_this.listSensitive.length > 0) && (g_SelectedRow != null)){
+                            for(let i =0; i<_this.listSensitive.length; i++){
+                                cnt++;
+                                if(_this.listSensitive[i].includes("modality")){
+                                    detail.modality = g_SelectedRow.modality;
+                                    detail.selectedRow = g_SelectedRow;
+                                }else if(_this.listSensitive[i].includes("bodypart")){
+                                    detail.bodypart = g_SelectedRow.bodypart;
+                                    detail.selectedRow = g_SelectedRow;
+                                }
+                                if(cnt == _this.listSensitive.length){
+                                    params.detail = detail;
+                                    _this.dispatchEvent(new CustomEvent('oldfilmSensitiveEvent', params));
+                                }
+                            }
+                        }else if(g_SelectedRow){
+                            detail.selectedRow = g_SelectedRow;
+                            params.detail = detail;
+                            _this.dispatchEvent(new CustomEvent('oldfilmSensitiveEvent', params));
+                        }
+                    });
+                }//ready
 
                 setTest(){
                     let modality = "DX";
@@ -209,8 +277,111 @@
                     }
                 }
 
+                setOldFilmList(getOldfilmList){
+                    if(getOldfilmList.length > 0){
+                        if(getOldfilmList.length > 1){
+                            this.clearOldReporListCheckbox();
+                        }else{
+                            this.hiddenOldFilmSensitive();
+                        }
+                        let cnt = 0;
+                        let oldfilmList = new Array();
+                        for(let i=0; i<getOldfilmList.length; i++){
+                            oldfilmList.push(this.setOldfilmOpinion(getOldfilmList[i]));
+                            cnt++;
+                            if(cnt == getOldfilmList.length){
+                                g_reportList = oldfilmList;
+                                this.oldfilm = oldfilmList;
+                            }
+                        }
+                    }else{
+                        this.hiddenOldFilmSensitive();
+                        this.oldfilm = new Array();
+                    }
+                }
+
+                setOldFilmListBySensitive(getOldfilmList){
+                    if(getOldfilmList.length > 0){
+                        if(getOldfilmList.length == 1){
+                            this.hiddenOldFilmSensitive();
+                        }
+                        let cnt = 0;
+                        let oldfilmList = new Array();
+                        for(let i=0; i<getOldfilmList.length; i++){
+                            oldfilmList.push(this.setOldfilmOpinion(getOldfilmList[i]));
+                            cnt++;
+                            if(cnt == getOldfilmList.length){
+                                g_reportList = oldfilmList;
+                                this.oldfilm = oldfilmList;
+                            }
+                        }
+                    }else{
+                        this.hiddenOldFilmSensitive();
+                        this.oldfilm = new Array();
+                    }
+                }
+
+                setNewfilmSelectedRow(selectedRow){
+                    // this.clearOldReporListCheckbox();
+                    g_SelectedRow = selectedRow;
+                }
+
+                clearOldReporListCheckbox(){
+                    this.$.oldFilmSensitive.style.display = "";
+                    this.$.sensitiveModal.checked = false;
+                    this.$.sensitiveBody.checked = false;
+                    this.$.iconAscending.hidden = false;
+                    this.$.fontAsc.hidden = false;
+                    this.$.iconDescending.hidden = true;
+                    this.$.fontDsc.hidden = true;
+                }
+
+                hiddenOldFilmSensitive(){
+                    this.$.oldFilmSensitive.style.display = "none";
+                }
+
                 init(){
                     this.oldfilm = new Array();
+                }
+
+                setOldfilmOpinion(inputOldfilm){
+                    let resultOldfilm = new Object();
+                    if(inputOldfilm.finding){
+                        resultOldfilm.finding = inputOldfilm.finding;
+                    }else{
+                        resultOldfilm.finding = "";
+                    }
+                    if(inputOldfilm.conclusion){
+                        resultOldfilm.conclusion = inputOldfilm.conclusion;
+                    }else{
+                        resultOldfilm.conclusion = "";
+                    }
+                    if(inputOldfilm.recommendation){
+                        resultOldfilm.recommendation = inputOldfilm.recommendation;
+                    }else{
+                        resultOldfilm.recommendation = "";
+                    }
+                    let title = inputOldfilm.modality + " " + inputOldfilm.bodypart + " " + inputOldfilm.studyDtime;
+                    let report = "[ STUDY DESCRIPTION ]" + "\n" + inputOldfilm.studyDescription + "\n\n" + "[ FINDING ]" + "\n" + resultOldfilm.finding + "\n\n" + "[ CONCLUSION ]" + "\n" + resultOldfilm.conclusion + "\n\n" + "[ RECOMMENDATION ]" + "\n" + resultOldfilm.recommendation;
+                    resultOldfilm.title = title;
+                    resultOldfilm.report = report;
+                    return resultOldfilm;
+                }
+
+                ascSort(){
+                    this.$.iconAscending.hidden = true;
+                    this.$.fontAsc.hidden = true;
+                    this.$.iconDescending.hidden = false;
+                    this.$.fontDsc.hidden = false;
+                    this.sort();
+                }
+
+                dscSort(){
+                    this.$.iconAscending.hidden = false;
+                    this.$.fontAsc.hidden = false;
+                    this.$.iconDescending.hidden = true;
+                    this.$.fontDsc.hidden = true;
+                    this.sort();
                 }
 
                 sort(){
@@ -283,7 +454,6 @@
                     param.detail = detail;
                     _this.dispatchEvent(new CustomEvent('copiedOldfilmOpinion', param));
                 }
-
             }
 
             window.customElements.define(HhReportOldfilm.is, HhReportOldfilm);
