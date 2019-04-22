@@ -153,6 +153,7 @@
                 <template is="dom-repeat" items="{{oldfilm}}" id="oldFilmReport">
                     <div class="class-old-report" index="[[index]]">
                         <div class="class-old-report-title">
+                            <input class="class-oldfilm-title" id="oldfilmId" value="{{item.id}}" style="display: none;"/>
                             <input class="class-oldfilm-title" id="oldfilmTitle" value="{{item.title}}" readonly/>
                         </div>
                         <div class="class-old-report-context" style="height: calc(100% - 32px);">
@@ -175,6 +176,10 @@
         (function () {
             let g_reportList = new Array();
             let g_SelectedRow = new Object();
+
+            let sameModality = [];
+            let sameBodypart = [];
+            let sameModalityAndBodypart = [];
             let _this;
             class HhReportOldfilm extends Polymer.Element {
                 static get is() {
@@ -191,6 +196,9 @@
                         oldfilm: {
                             type: Array,
                             value: {
+                                id: {
+                                    type: String
+                                },
                                 title: {
                                     type: String,
                                     value: ""
@@ -222,103 +230,110 @@
                 ready() {
                     super.ready();
                     this.init();
-                    // this.setTest();
 
-                    this.$.sensitive.addEventListener('selected-items-changed',function(e){
-                        let cnt =0;
-                        let params = new Object();
-                        let detail = new Object();
-                        if((_this.listSensitive.length > 0) && (g_SelectedRow != null)){
-                            for(let i =0; i<_this.listSensitive.length; i++){
-                                cnt++;
-                                if(_this.listSensitive[i].includes("modality")){
-                                    detail.modality = g_SelectedRow.modality;
-                                    detail.selectedRow = g_SelectedRow;
-                                }else if(_this.listSensitive[i].includes("bodypart")){
-                                    detail.bodypart = g_SelectedRow.bodypart;
-                                    detail.selectedRow = g_SelectedRow;
-                                }
-                                if(cnt == _this.listSensitive.length){
-                                    params.detail = detail;
-                                    _this.dispatchEvent(new CustomEvent('oldfilmSensitiveEvent', params));
-                                }
+                    this.$.sensitive.addEventListener('selected-items-changed', function (e) {
+                        if ((_this.listSensitive.length > 0) && (g_SelectedRow != null)) {
+                            if (_this.listSensitive.includes("modality")) {
+                                _this.oldfilm = _this.convertOpinion(sameModality);
                             }
-                        }else if(g_SelectedRow){
-                            detail.selectedRow = g_SelectedRow;
-                            params.detail = detail;
-                            _this.dispatchEvent(new CustomEvent('oldfilmSensitiveEvent', params));
+                            if (_this.listSensitive.includes("bodypart")) {
+                                _this.oldfilm = _this.convertOpinion(sameBodypart);
+                            }
+                            if (_this.listSensitive.includes("modality") && _this.listSensitive.includes("bodypart")) {
+                                _this.oldfilm = _this.convertOpinion(sameModalityAndBodypart);
+                            }
+                        }
+                        else if (_this.listSensitive.length == 0 && g_SelectedRow != null) {
+                            _this.oldfilm = g_reportList;
                         }
                     });
-                }//ready
-
-                setTest(){
-                    let modality = "DX";
-                    let bodypart = "CHEST";
-                    let studyDesc = "Chest without Breast, Axilla US";
-                    let studyDate = "2018-08-03 14:36:23";
-                    let title = modality + " " + bodypart + " " + studyDate;
-                    let finding = "TEST FINDING";
-                    let conclusion = "TEST CONCLUSION";
-                    let recommendation = "TEST RECOMMENDATION";
-                    let report = "STUDY DESCRIPTION" + "\n" + studyDesc + "\n\n" + "FINDING" + "\n" + finding + "\n\n" + "CONCLUSION" + "\n" + conclusion + "\n\n" + "RECOMMENDATION" + "\n" + recommendation;
-
-                    let oldfilmList = new Array();
-                    let cnt = 0;
-                    for (let i = 0; i < 5; i++) {
-                        let oldfilm = new Object();
-                        oldfilm.title = cnt+" "+title;
-                        oldfilm.report = report;
-                        oldfilmList.push(oldfilm);
-                        cnt++;
-                        if(cnt == 5){
-                            this.oldfilm = oldfilmList;
-                            g_reportList = oldfilmList;
-                        }
-                    }
                 }
 
-                setOldFilmList(getOldfilmList){
-                    if(getOldfilmList.length > 0){
-                        if(getOldfilmList.length > 1){
+                convertOpinion(report) {
+                    let oldfilmList = new Array();
+                    for (let row of report) {
+                        let approveDtime = row.opinionApprovedDtime;
+                        for (let opinion of row.opinion) {
+                            if(opinion.approveTime === approveDtime) {
+                                oldfilmList.push(_this.setOldfilmOpinion(row, opinion));
+                            }
+                        }
+                    }
+                    return oldfilmList;
+                }
+
+                setOldFilmList(previousReports){
+
+                    if(previousReports.length > 0){
+                        if(previousReports.length > 1){
                             this.clearOldReporListCheckbox();
                         }else{
                             this.hiddenOldFilmSensitive();
                         }
-                        let cnt = 0;
                         let oldfilmList = new Array();
-                        for(let i=0; i<getOldfilmList.length; i++){
-                            oldfilmList.push(this.setOldfilmOpinion(getOldfilmList[i]));
-                            cnt++;
-                            if(cnt == getOldfilmList.length){
-                                g_reportList = oldfilmList;
-                                this.oldfilm = oldfilmList;
+
+                        sameBodypart = new Array();
+                        sameModality = new Array();
+                        sameModalityAndBodypart = new Array();
+
+                        for(let i=0; i<previousReports.length; i++){
+
+                            if(previousReports[i].modality[0] === g_SelectedRow.modality) {
+                                sameModality.push(previousReports[i]);
+                            }
+                            if(previousReports[i].bodypart[0] === g_SelectedRow.bodypart) {
+                                sameBodypart.push(previousReports[i]);
+                            }
+                            if(previousReports[i].modality[0] === g_SelectedRow.modality && previousReports[i].bodypart[0] === g_SelectedRow.bodypart) {
+                                sameModalityAndBodypart.push(previousReports[i]);
+                            }
+
+                            let approveDtime = previousReports[i].opinionApprovedDtime;
+                            for (let opinion of previousReports[i].opinion) {
+                                if(opinion.approveTime === approveDtime) {
+                                    oldfilmList.push(this.setOldfilmOpinion(previousReports[i], opinion));
+                                }
                             }
                         }
+                        g_reportList = oldfilmList;
+                        this.oldfilm = oldfilmList;
                     }else{
                         this.hiddenOldFilmSensitive();
                         this.oldfilm = new Array();
                     }
                 }
 
-                setOldFilmListBySensitive(getOldfilmList){
-                    if(getOldfilmList.length > 0){
-                        let cnt = 0;
+                seletedPreviousReports(row) {
+                    this.hiddenOldFilmSensitive();
+                    let oldfilmList = new Array();
+                    for (let previousReports of g_reportList) {
+                        if(previousReports.id == row[0].id) {
+                            oldfilmList.push(previousReports)
+                            break;
+                        }
+                    }
+                    this.oldfilm = oldfilmList;
+                }
+
+                setOldFilmListBySensitive(previousReports){
+                    if(previousReports.length > 0){
                         let oldfilmList = new Array();
-                        for(let i=0; i<getOldfilmList.length; i++){
-                            oldfilmList.push(this.setOldfilmOpinion(getOldfilmList[i]));
-                            cnt++;
-                            if(cnt == getOldfilmList.length){
-                                g_reportList = oldfilmList;
-                                this.oldfilm = oldfilmList;
+                        for(let i=0; i<previousReports.length; i++){
+                            let approveDtime = previousReports[i].opinionApprovedDtime;
+                            for (let opinion of previousReports[i].opinion) {
+                                if(opinion.approveTime === approveDtime) {
+                                    oldfilmList.push(this.setOldfilmOpinion(previousReports[i], opinion));
+                                }
                             }
                         }
+                        g_reportList = oldfilmList;
+                        this.oldfilm = oldfilmList;
                     }else{
                         this.oldfilm = new Array();
                     }
                 }
 
                 setNewfilmSelectedRow(selectedRow){
-                    // this.clearOldReporListCheckbox();
                     g_SelectedRow = selectedRow;
                 }
 
@@ -330,6 +345,7 @@
                     this.$.fontAsc.hidden = false;
                     this.$.iconDescending.hidden = true;
                     this.$.fontDsc.hidden = true;
+                    this.oldfilm = g_reportList;
                 }
 
                 hiddenOldFilmSensitive(){
@@ -340,28 +356,47 @@
                     this.oldfilm = new Array();
                 }
 
-                setOldfilmOpinion(inputOldfilm){
-                    let resultOldfilm = new Object();
-                    if(inputOldfilm.finding){
-                        resultOldfilm.finding = inputOldfilm.finding;
+                setOldfilmOpinion(reports, opinion){
+                    let resultOpinion = new Object();
+                    if(opinion.finding){
+                        resultOpinion.finding = opinion.finding;
                     }else{
-                        resultOldfilm.finding = "";
+                        resultOpinion.finding = "";
                     }
-                    if(inputOldfilm.conclusion){
-                        resultOldfilm.conclusion = inputOldfilm.conclusion;
+                    if(opinion.conclusion){
+                        resultOpinion.conclusion = opinion.conclusion;
                     }else{
-                        resultOldfilm.conclusion = "";
+                        resultOpinion.conclusion = "";
                     }
-                    if(inputOldfilm.recommendation){
-                        resultOldfilm.recommendation = inputOldfilm.recommendation;
+                    if(opinion.recommendation){
+                        resultOpinion.recommendation = opinion.recommendation;
                     }else{
-                        resultOldfilm.recommendation = "";
+                        resultOpinion.recommendation = "";
                     }
-                    let title = inputOldfilm.modality + " " + inputOldfilm.bodypart + " " + inputOldfilm.studyDtime;
-                    let report = "[ STUDY DESCRIPTION ]" + "\n" + inputOldfilm.studyDescription + "\n\n" + "[ FINDING ]" + "\n" + resultOldfilm.finding + "\n\n" + "[ CONCLUSION ]" + "\n" + resultOldfilm.conclusion + "\n\n" + "[ RECOMMENDATION ]" + "\n" + resultOldfilm.recommendation;
-                    resultOldfilm.title = title;
-                    resultOldfilm.report = report;
-                    return resultOldfilm;
+                    let title = reports.modality[0] + " " + reports.bodypart[0] + " " + this.convertDateFormat(reports.studyDate[0]) + " " + this.convertTimeFormat(reports.studyTime[0]);
+                    let report = "[ STUDY DESCRIPTION ]" + "\n" + reports.studyDescription[0] + "\n\n" + "[ FINDING ]" + "\n" + resultOpinion.finding + "\n\n" + "[ CONCLUSION ]" + "\n" + resultOpinion.conclusion + "\n\n" + "[ RECOMMENDATION ]" + "\n" + resultOpinion.recommendation;
+                    resultOpinion.id = reports.id;
+                    resultOpinion.title = title;
+                    resultOpinion.report = report;
+                    return resultOpinion;
+                }
+
+                convertTimeFormat(time) {
+                    let hour = time.substring(0,2);
+                    let min = time.substring(2,4);
+                    let sec = time.substring(4,6);
+                    time = hour+":"+min+":"+sec;
+
+                    return time;
+                }
+
+                convertDateFormat(date) {
+                    let year = date.substring(0,4);
+                    let month = date.substring(4,6);
+                    let day = date.substring(6,8);
+                    date = year+"-"+month+"-"+day;
+
+                    return date;
                 }
 
                 ascSort(){
@@ -382,9 +417,9 @@
 
                 sort(){
                     let oldfilmList = new Array();
-                    for(let i=g_reportList.length -1; i>=0; i--){
+                    for(let i= _this.oldfilm.length -1; i>=0; i--){
                         let oldfilm = new Object();
-                        oldfilm = g_reportList[i];
+                        oldfilm = _this.oldfilm[i];
                         oldfilmList.push(oldfilm);
                         if(i == 0){
                             this.oldfilm = oldfilmList;
