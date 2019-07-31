@@ -262,8 +262,7 @@
                     return oldfilmList;
                 }
 
-                setOldFilmList(previousReports){
-
+                setOldFilmList(previousReports, id){
                     if(previousReports.length > 0){
                         if(previousReports.length > 1){
                             this.clearOldReporListCheckbox();
@@ -288,12 +287,27 @@
                                 sameModalityAndBodypart.push(previousReports[i]);
                             }
 
-                            let approveDtime = previousReports[i].opinionApprovedDtime;
-                            for (let opinion of previousReports[i].opinion) {
-                                if(opinion.approveTime === approveDtime) {
-                                    oldfilmList.push(this.setOldfilmOpinion(previousReports[i], opinion));
+                            if(previousReports[i].id != id) {
+                                let approveDtime = previousReports[i].opinionApprovedDtime;
+                                for (let opinion of previousReports[i].opinion) {
+                                    if(opinion.approveTime === approveDtime) {
+                                        oldfilmList.push(this.setOldfilmOpinion(previousReports[i], opinion));
+                                    }
+                                }
+                            } else {
+                                for (let opinion of previousReports[i].opinion) {
+                                    let userId = JSON.parse(localStorage.getItem("user")).id;
+                                    if(userId == opinion.userId) {
+                                        if(opinion.approveStatus != "corrected") {
+                                            oldfilmList.push(this.setOldfilmOpinion(previousReports[i], opinion));
+                                        }
+                                    } else {
+                                        oldfilmList.push(this.setOldfilmOpinion(previousReports[i], opinion));
+                                    }
+
                                 }
                             }
+
                         }
                         g_reportList = oldfilmList;
                         this.oldfilm = oldfilmList;
@@ -373,7 +387,7 @@
                     }else{
                         resultOpinion.recommendation = "";
                     }
-                    let title = reports.modality[0] + " " + reports.bodypart[0] + " " + this.convertDateFormat(reports.studyDate[0]) + " " + this.convertTimeFormat(reports.studyTime[0]);
+                    let title = reports.modality[0] + " " + reports.bodypart[0] + " " + this.convertDateFormat(reports.studyDate[0]) + " " + this.convertTimeFormat(reports.studyTime[0]) + " " + opinion.approver;
                     let report = "[ STUDY DESCRIPTION ]" + "\n" + reports.studyDescription[0] + "\n\n" + "[ FINDING ]" + "\n" + resultOpinion.finding + "\n\n" + "[ CONCLUSION ]" + "\n" + resultOpinion.conclusion + "\n\n" + "[ RECOMMENDATION ]" + "\n" + resultOpinion.recommendation;
                     resultOpinion.id = reports.id;
                     resultOpinion.title = title;
