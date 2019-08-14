@@ -412,11 +412,11 @@
                     if(ellapsedTime < 0){
                         // 선택된 판독문보다 이전
                         ellapsedTime = ellapsedTime  * -1;
-                        title = reports.modality[0] + " " + reports.bodypart[0] + " " + this.convertDateFormat(reports.studyDate[0]) + " " + this.convertTimeFormat(reports.studyTime[0]) + " " + opinion.approver + " ("+ ellapsedTime  +"일전)";
+                        title = reports.modality[0] + " " + reports.bodypart[0] + " " + this.convertDateFormat(reports.studyDate[0]) + " " + this.convertTimeFormat(reports.studyTime[0]) + " " + opinion.approver + " (Before "+ ellapsedTime  +" days)";
                         resultOpinion.color = "LightSalmon ";
                     }else if(ellapsedTime > 0){
                         // 선택된 판독문보다 이후
-                        title = reports.modality[0] + " " + reports.bodypart[0] + " " + this.convertDateFormat(reports.studyDate[0]) + " " + this.convertTimeFormat(reports.studyTime[0]) + " " + opinion.approver + " ("+ ellapsedTime +"일후)";
+                        title = reports.modality[0] + " " + reports.bodypart[0] + " " + this.convertDateFormat(reports.studyDate[0]) + " " + this.convertTimeFormat(reports.studyTime[0]) + " " + opinion.approver + " (After "+ ellapsedTime +" days)";
                         resultOpinion.color = "MediumTurquoise";
                     }
                     // else if(ellapsedTime == 0){
