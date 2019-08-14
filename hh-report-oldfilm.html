@@ -152,9 +152,9 @@
                 </div>
                 <template is="dom-repeat" items="{{oldfilm}}" id="oldFilmReport">
                     <div class="class-old-report" index="[[index]]">
-                        <div class="class-old-report-title">
+                        <div class="class-old-report-title" id="oldReportTitle">
                             <input class="class-oldfilm-title" id="oldfilmId" value="{{item.id}}" style="display: none;"/>
-                            <input class="class-oldfilm-title" id="oldfilmTitle" value="{{item.title}}" readonly/>
+                            <input class="class-oldfilm-title" id="oldfilmTitle" value="{{item.title}}" style$="color: {{item.color}}" readonly/>
                         </div>
                         <div class="class-old-report-context" style="height: calc(100% - 32px);">
                             <iron-autogrow-textarea class="class-old-report-textarea" id="oldfilmReport"
@@ -176,6 +176,7 @@
         (function () {
             let g_reportList = new Array();
             let g_SelectedRow = new Object();
+            let g_SelectedCaseDate = new Object();
 
             let sameModality = [];
             let sameBodypart = [];
@@ -262,8 +263,11 @@
                     return oldfilmList;
                 }
 
-                setOldFilmList(previousReports){
+                setOldFilmList(previousReports, id){
+                    // console.log(id);
+                    // console.log(previousReports);
 
+                    g_SelectedCaseDate = new Object();
                     if(previousReports.length > 0){
                         if(previousReports.length > 1){
                             this.clearOldReporListCheckbox();
@@ -271,30 +275,45 @@
                             this.hiddenOldFilmSensitive();
                         }
                         let oldfilmList = new Array();
+                        let selectedRow = new Object();
 
                         sameBodypart = new Array();
                         sameModality = new Array();
                         sameModalityAndBodypart = new Array();
 
-                        for(let i=0; i<previousReports.length; i++){
-
-                            if(previousReports[i].modality[0] === g_SelectedRow.modality) {
-                                sameModality.push(previousReports[i]);
-                            }
-                            if(previousReports[i].bodypart[0] === g_SelectedRow.bodypart) {
-                                sameBodypart.push(previousReports[i]);
-                            }
-                            if(previousReports[i].modality[0] === g_SelectedRow.modality && previousReports[i].bodypart[0] === g_SelectedRow.bodypart) {
-                                sameModalityAndBodypart.push(previousReports[i]);
-                            }
-
-                            let approveDtime = previousReports[i].opinionApprovedDtime;
-                            for (let opinion of previousReports[i].opinion) {
-                                if(opinion.approveTime === approveDtime) {
-                                    oldfilmList.push(this.setOldfilmOpinion(previousReports[i], opinion));
+                        if(previousReports.length > 1){
+                            for(let i=0; i<previousReports.length; i++){
+                                if(previousReports[i].id == id) {
+                                    g_SelectedCaseDate = previousReports[i];
+                                    break;
                                 }
                             }
                         }
+
+                        for(let i=0; i<previousReports.length; i++){
+
+                            if(previousReports[i].id != id) {
+
+                                let previousReport = previousReports[i];
+
+                                if(previousReport.modality[0] === g_SelectedRow.modality && (previousReport.id != id)) {
+                                    sameModality.push(previousReport);
+                                }
+                                if(previousReport.bodypart[0] === g_SelectedRow.bodypart && (previousReport.id != id)) {
+                                    sameBodypart.push(previousReport);
+                                }
+                                if(previousReport.modality[0] === g_SelectedRow.modality && previousReport.bodypart[0] === g_SelectedRow.bodypart && (previousReport.id != id)) {
+                                    sameModalityAndBodypart.push(previousReport);
+                                }
+
+                                let approveDtime = previousReport.opinionApprovedDtime;
+                                for (let opinion of previousReport.opinion) {
+                                    if(opinion.approveTime === approveDtime) {
+                                        oldfilmList.push(this.setOldfilmOpinion(previousReport, opinion));
+                                    }
+                                }
+                            }
+                        }// for
                         g_reportList = oldfilmList;
                         this.oldfilm = oldfilmList;
                     }else{
@@ -373,7 +392,44 @@
                     }else{
                         resultOpinion.recommendation = "";
                     }
-                    let title = reports.modality[0] + " " + reports.bodypart[0] + " " + this.convertDateFormat(reports.studyDate[0]) + " " + this.convertTimeFormat(reports.studyTime[0]);
+
+                    let ellapsedTime = "";
+                    if(g_SelectedCaseDate){
+
+                        let date = new Date(parseInt(g_SelectedCaseDate.opinionApprovedDtime));
+                        // console.log(date.getFullYear()+" "+(date.getMonth()+1)+" "+date.getDate());
+
+                        let date2 = new Date(parseInt(reports.opinionApprovedDtime));
+                        // console.log(date2.getFullYear()+" "+(date2.getMonth()+1)+" "+date2.getDate());
+
+                        let diff = date2 - date;
+                        let cDay = 24 * 60 * 60 * 1000;
+                        ellapsedTime = parseInt(diff/cDay);
+                        // console.log("일수 차 :"+ ellapsedTime);
+                    }
+
+                    let title = null;
+                    if(ellapsedTime < 0){
+                        // 선택된 판독문보다 이전
+                        ellapsedTime = ellapsedTime  * -1;
+                        title = reports.modality[0] + " " + reports.bodypart[0] + " " + this.convertDateFormat(reports.studyDate[0]) + " " + this.convertTimeFormat(reports.studyTime[0]) + " " + opinion.approver + " ("+ ellapsedTime  +"일전)";
+                        resultOpinion.color = "LightSalmon ";
+                    }else if(ellapsedTime > 0){
+                        // 선택된 판독문보다 이후
+                        title = reports.modality[0] + " " + reports.bodypart[0] + " " + this.convertDateFormat(reports.studyDate[0]) + " " + this.convertTimeFormat(reports.studyTime[0]) + " " + opinion.approver + " ("+ ellapsedTime +"일후)";
+                        resultOpinion.color = "MediumTurquoise";
+                    }
+                    // else if(ellapsedTime == 0){
+                    //     // 선택된 판독문하고 같을때
+                    //     title = reports.modality[0] + " " + reports.bodypart[0] + " " + this.convertDateFormat(reports.studyDate[0]) + " " + this.convertTimeFormat(reports.studyTime[0]) + " " + opinion.approver + " ("+ (ellapsedTime * -1) +"일 Approved)";
+                    //     resultOpinion.color = "DarkGray";
+                    // }
+                    else{
+                        // 선택된 판독문이 아직 판독이 되지 않았을때
+                        title = reports.modality[0] + " " + reports.bodypart[0] + " " + this.convertDateFormat(reports.studyDate[0]) + " " + this.convertTimeFormat(reports.studyTime[0]) + " " + opinion.approver;
+                        resultOpinion.color = "white";
+                    }
+
                     let report = "[ STUDY DESCRIPTION ]" + "\n" + reports.studyDescription[0] + "\n\n" + "[ FINDING ]" + "\n" + resultOpinion.finding + "\n\n" + "[ CONCLUSION ]" + "\n" + resultOpinion.conclusion + "\n\n" + "[ RECOMMENDATION ]" + "\n" + resultOpinion.recommendation;
                     resultOpinion.id = reports.id;
                     resultOpinion.title = title;
