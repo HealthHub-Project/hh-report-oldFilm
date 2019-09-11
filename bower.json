@@ -2,6 +2,7 @@
   "name": "hh-report-oldfilm",
   "description": "oldfilm report",
   "main": "hh-report-oldfilm.html",
+  "version":"0.9.0",
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0",
     "iron-autogrow-textarea": "PolymerElements/iron-autogrow-textarea#2.2.0",
