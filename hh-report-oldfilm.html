@@ -79,35 +79,6 @@
                 border: 0px;
             }
 
-            vaadin-context-menu
-            :host [part="content"] {
-                background-color : #2d3436;
-                border : 1px solid #424242;
-                color: #aaaa;
-                overflow: hidden;
-            }
-
-            :host [part="overlay"] {
-                width: 180px;
-            }
-
-            .contextMenu-item {
-                color: #aaaa;
-                font-size: 14px;
-                padding: 0px;
-            }
-
-            .contextMenu-item:hover {
-                color: #0087cb;
-            }
-
-            .menu-separator {
-                border-bottom: 1px solid #4C5667;
-                margin-top: 5px;
-                margin-bottom: 5px;
-            }
-
-
             .class-oldFilmReportSelected{
                 height: 25px;
                 width: 100%;
@@ -141,28 +112,62 @@
                 padding: 5px;
                 color: #aaa;
             }
+
+            /* context menu */
+            .context-menu {
+                display: none;
+                position: absolute;
+                z-index: 5;
+                padding: 1px;
+                width: 190px;
+                background-color : #2d3436;
+                border-radius: 2px;
+                box-shadow: none;
+            }
+
+            .context-menu--active {
+                display: block;
+            }
+
+            .context-menu__items {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+                font-size: 15px;
+            }
+
+            .context-menu__item {
+                display: block;
+                margin-bottom: 4px;
+            }
+
+            .context-menu__item:last-child {
+                margin-bottom: 0;
+            }
+
+            .context-menu__link {
+                display: block;
+                padding: 4px 12px;
+                color: #aaaaaa;
+                text-decoration: none;
+            }
+
+            .context-menu__link:hover {
+                color: #0087cb;
+                background-color: #3d4749;
+            }
+
         </style>
-        <div class="container">
-            <vaadin-context-menu id="contextMenu" selector=".class-old-report">
-                <template>
-                    <paper-menu>
-                        <paper-item list-item="[[target]]" class="contextMenu-item" on-click="allPaste">all Paste</paper-item>
-                        <div class="menu-separator"></div>
-                        <paper-item list-item="[[target]]" class="contextMenu-item" on-click="fPaste">finding Paste</paper-item>
-                        <div class="menu-separator"></div>
-                        <paper-item list-item="[[target]]" class="contextMenu-item" on-click="cPaste">conclusion Paste</paper-item>
-                        <div class="menu-separator"></div>
-                        <paper-item list-item="[[target]]" class="contextMenu-item" on-click="rPaste">recommend Paste</paper-item>
-                    </paper-menu>
-                </template>
-                <div class="class-oldFilmReportSelected" id="oldFilmSensitive" style="display: none">
-                    <iron-selector attr-for-selected="value" id="sensitive" selected-values="{{listSensitive}}" multi>
-                        <paper-checkbox value="modality" id="sensitiveModal" class="checkBox-style" noink>Modality</paper-checkbox>
-                        <paper-checkbox value="bodypart" id="sensitiveBody"  class="checkBox-style" noink>Bodypart</paper-checkbox>
-                    </iron-selector>
-                    <div id="fontAsc" on-click="ascSort" readonly><paper-icon-button id="iconAscending" noink icon="vaadin:chevron-down-small" title="oldListSort" class="iconSortBtn" ></paper-icon-button>Descending</div>
-                    <div id="fontDsc" on-click="dscSort" readonly hidden="true"><paper-icon-button id="iconDescending" noink icon="vaadin:chevron-up-small" title="oldListSort" class="iconSortBtn" ></paper-icon-button>Ascending</div>
-                </div>
+        <div class="container" id="test">
+            <div class="class-oldFilmReportSelected" id="oldFilmSensitive" style="display: none">
+                <iron-selector attr-for-selected="value" id="sensitive" selected-values="{{listSensitive}}" multi>
+                    <paper-checkbox value="modality" id="sensitiveModal" class="checkBox-style" noink>Modality</paper-checkbox>
+                    <paper-checkbox value="bodypart" id="sensitiveBody"  class="checkBox-style" noink>Bodypart</paper-checkbox>
+                </iron-selector>
+                <div id="fontAsc" on-click="ascSort" readonly><paper-icon-button id="iconAscending" noink icon="vaadin:chevron-down-small" title="oldListSort" class="iconSortBtn" ></paper-icon-button>Descending</div>
+                <div id="fontDsc" on-click="dscSort" readonly hidden="true"><paper-icon-button id="iconDescending" noink icon="vaadin:chevron-up-small" title="oldListSort" class="iconSortBtn" ></paper-icon-button>Ascending</div>
+            </div>
+            <div style="height: calc(100% - 25px); display: block;">
                 <template is="dom-repeat" items="{{oldfilm}}" id="oldFilmReport">
                     <div class="class-old-report" index="[[index]]">
                         <div class="class-old-report-title" id="oldReportTitle">
@@ -175,13 +180,32 @@
                         </div>
                     </div>
                 </template>
-            </vaadin-context-menu>
+            </div>
         </div>
+        <nav id="contextMenu" class="context-menu">
+            <ul class="context-menu__items">
+                <li class="context-menu__item">
+                    <a href="#" class="context-menu__link" on-click="allPaste" data-action="ALL"><i class="fa fa-eye"></i> All Paste</a>
+                </li>
+                <li class="context-menu__item">
+                    <a href="#" class="context-menu__link" on-click="fPaste" data-action="FINDING"><i class="fa fa-edit"></i>Finding Paste</a>
+                </li>
+                <li class="context-menu__item">
+                    <a href="#" class="context-menu__link" on-click="cPaste" data-action="CONCLUSION"><i class="fa fa-times"></i>Conclusion Paste</a>
+                </li>
+                <li class="context-menu__item">
+                    <a href="#" class="context-menu__link"  on-click="rPaste" data-action="RECOMMENDATION"><i class="fa fa-times"></i>Recommendation Paste</a>
+                </li>
+            </ul>
+        </nav>
     </template>
     <script>
         /**
          * `hh-report-oldfilm`
          * oldfilm report
+         *
+         * Version  1.0.4
+         * Date     190918
          *
          * @customElement
          * @polymer
@@ -191,10 +215,33 @@
             let g_SelectedRow = new Object();
             let g_SelectedCaseDate = new Object();
 
+            let _selectedRelatedReport = null;
+
             let sameModality = [];
             let sameBodypart = [];
             let sameModalityAndBodypart = [];
             let _this;
+
+            /**
+             * Context Variables.
+             */
+            let contextMenuActive = "context-menu--active";
+
+            let taskItemClassName = "TEXTAREA";
+            let taskItemInContext;
+
+            let clickCoords;
+            let clickCoordsX;
+            let clickCoordsY;
+
+            let menu;
+            let menuState = 0;
+            let menuWidth;
+            let menuHeight;
+
+            let windowWidth;
+            let windowHeight;
+
             class HhReportOldfilm extends Polymer.Element {
                 static get is() {
                     return 'hh-report-oldfilm';
@@ -244,6 +291,7 @@
                 ready() {
                     super.ready();
                     this.init();
+                    this.initContextMenu();
 
                     this.$.sensitive.addEventListener('selected-items-changed', function (e) {
                         if ((_this.listSensitive.length > 0) && (g_SelectedRow != null)) {
@@ -279,7 +327,6 @@
                 setOldFilmList(previousReports, id){
                     // console.log(id);
                     // console.log(previousReports);
-
                     g_SelectedCaseDate = new Object();
                     if(previousReports.length > 0){
                         if(previousReports.length > 1){
@@ -367,6 +414,12 @@
 
                 setNewfilmSelectedRow(selectedRow){
                     g_SelectedRow = selectedRow;
+                    // 판독이 완료된 케이스는 복사 금지
+                    // if(g_SelectedRow.readingStatus =="3A"){
+                    //     this.disabledContextMenu();
+                    // }else{
+                    //     this.enabledContextMenu();
+                    // }
                 }
 
                 clearOldReporListCheckbox(){
@@ -501,12 +554,11 @@
                     let param = new Object();
                     let detail = new Object();
                     let copiedOpinion = new Object();
-                    let menuItem = e.target;
-                    let listItem = menuItem.listItem;
 
-                    copiedOpinion.finding = listItem.children[1].children[0].__dataHost.__data.item.finding;
-                    copiedOpinion.conclusion = listItem.children[1].children[0].__dataHost.__data.item.conclusion;
-                    copiedOpinion.recommendation = listItem.children[1].children[0].__dataHost.__data.item.recommendation;
+                    copiedOpinion.finding = _selectedRelatedReport.finding;
+                    copiedOpinion.conclusion = _selectedRelatedReport.conclusion;
+                    copiedOpinion.recommendation = _selectedRelatedReport.recommendation;
+
                     detail.copiedOpinion = copiedOpinion;
                     detail.sensitive = "all";
                     param.detail = detail;
@@ -517,10 +569,7 @@
                     let param = new Object();
                     let detail = new Object();
                     let copiedOpinion = new Object();
-                    let menuItem = e.target;
-                    let listItem = menuItem.listItem;
-
-                    copiedOpinion.finding = listItem.children[1].children[0].__dataHost.__data.item.finding;
+                    copiedOpinion.finding = _selectedRelatedReport.finding;
                     detail.copiedOpinion = copiedOpinion;
                     detail.sensitive = "finding";
                     param.detail = detail;
@@ -531,10 +580,7 @@
                     let param = new Object();
                     let detail = new Object();
                     let copiedOpinion = new Object();
-                    let menuItem = e.target;
-                    let listItem = menuItem.listItem;
-
-                    copiedOpinion.conclusion = listItem.children[1].children[0].__dataHost.__data.item.conclusion;
+                    copiedOpinion.conclusion = _selectedRelatedReport.conclusion;
                     detail.copiedOpinion = copiedOpinion;
                     detail.sensitive = "conclusion";
                     param.detail = detail;
@@ -546,16 +592,197 @@
                     let detail = new Object();
                     let copiedOpinion = new Object();
                     let menuItem = e.target;
-                    let listItem = menuItem.listItem;
+                    // let listItem = menuItem.listItem;
 
-                    copiedOpinion.recommendation = listItem.children[1].children[0].__dataHost.__data.item.recommendation;
+                    // copiedOpinion.recommendation = listItem.children[1].children[0].__dataHost.__data.item.recommendation;
+                    copiedOpinion.recommendation = _selectedRelatedReport.recommendation;
                     detail.copiedOpinion = copiedOpinion;
                     detail.sensitive = "recommendation";
                     param.detail = detail;
                     _this.dispatchEvent(new CustomEvent('copiedOldfilmOpinion', param));
                 }
-            }
 
+
+
+                /*CONTEXT SCRIPT*/
+                //////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////
+                //
+                // H E L P E R    F U N C T I O N S
+                //
+                //////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////
+
+                /**
+                 * Function to check if we clicked inside an element with a particular class
+                 * name.
+                 *
+                 * @param {Object} e The event
+                 * @param {String} className The class name to check against
+                 * @return {Boolean}
+                 */
+                clickInsideElement( e, className ) {
+                    if (e.path[3].nodeName.includes(className)) {
+                        _selectedRelatedReport = e.path[3].__dataHost.__data.item;
+                        return true;
+                    }
+                    return false;
+                }
+
+                /**
+                 * Get's exact position of event.
+                 *
+                 * @param {Object} e The event passed in
+                 * @return {Object} Returns the x and y position
+                 */
+                getPosition(e) {
+                    var posx = 0;
+                    var posy = 0;
+
+                    if (!e) var e = window.event;
+                    if (e.pageX || e.pageY) {
+                        posx = e.pageX;
+                        posy = e.pageY;
+                    } else if (e.clientX || e.clientY) {
+                        posx = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+                        posy = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+                    }
+
+                    return {
+                        x: posx - 10,
+                        y: posy - 20
+                    }
+                }
+
+                //////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////
+                //
+                // C O R E    F U N C T I O N S
+                //
+                //////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////
+
+                /**
+                 * Initialise our application's code.
+                 */
+                initContextMenu() {
+                    menu = this.$.contextMenu;
+                    this.contextListener();
+                    this.clickListener();
+                    this.keyupListener();
+                    this.resizeListener();
+                }
+
+                /**
+                 * Listens for Right click events.
+                 */
+                contextListener() {
+                    this.addEventListener( "contextmenu", function(e) {
+                        if(g_SelectedRow.readingStatus != "3A"){
+                            taskItemInContext = _this.clickInsideElement( e, taskItemClassName );
+                            if ( taskItemInContext ) {
+                                e.preventDefault();
+                                _this.toggleMenuOn();
+                                _this.positionMenu(e);
+                            } else {
+                                taskItemInContext = null;
+                                _this.toggleMenuOff();
+                            }
+                        }
+                    });
+                }
+
+                /**
+                 * Listens for Left click events.
+                 */
+                clickListener() {
+                    window.addEventListener( "click", function(e) {
+                        if(_selectedRelatedReport != null){
+                            _this.toggleMenuOff();
+                        }
+                    });
+                }
+
+                /**
+                 * Listens for keyup events.
+                 */
+                keyupListener() {
+                    window.onkeyup = function(e) {
+                        if ( e.keyCode === 27 ) {
+                            _this.toggleMenuOff();
+                        }
+                    }
+                }
+
+                /**
+                 * Window resize event listener
+                 */
+                resizeListener() {
+                    window.onresize = function(e) {
+                        _this.toggleMenuOff();
+                    };
+                }
+
+                /**
+                 * Turns the custom context menu on.
+                 */
+                toggleMenuOn() {
+                    if ( menuState !== 1 ) {
+                        menuState = 1;
+                        menu.classList.add( contextMenuActive );
+                    }
+                }
+
+                /**
+                 * Turns the custom context menu off.
+                 */
+                toggleMenuOff() {
+                    if ( menuState !== 0 ) {
+                        menuState = 0;
+                        menu.classList.remove( contextMenuActive );
+                        _selectedRelatedReport = null;
+                    }
+                }
+
+                /**
+                 * Positions the menu properly.
+                 *
+                 * @param {Object} e The event
+                 */
+                positionMenu(e) {
+                    clickCoords = this.getPosition(e);
+                    clickCoordsX = clickCoords.x;
+                    clickCoordsY = clickCoords.y;
+
+                    menuWidth = menu.offsetWidth + 4;
+                    menuHeight = menu.offsetHeight + 4;
+
+                    windowWidth = window.innerWidth;
+                    windowHeight = window.innerHeight;
+
+                    if ( (windowWidth - clickCoordsX) < menuWidth ) {
+                        menu.style.left = windowWidth - menuWidth + "px";
+                    } else {
+                        menu.style.left = clickCoordsX + "px";
+                    }
+
+                    if ( (windowHeight - clickCoordsY) < menuHeight ) {
+                        menu.style.top = windowHeight - menuHeight + "px";
+                    } else {
+                        menu.style.top = clickCoordsY + "px";
+                    }
+                }
+
+                /**
+                 * Dummy action function that logs an action when a menu item link is clicked
+                 *
+                 * @param {HTMLElement} link The link that was clicked
+                 */
+                menuItemListener( link ) {
+                    console.log( "Task ID - " + taskItemInContext.getAttribute("data-id") + ", Task action - " + link.getAttribute("data-action"));
+                    this.toggleMenuOff();
+                }
+            }
             window.customElements.define(HhReportOldfilm.is, HhReportOldfilm);
         })()
     </script>
