@@ -366,6 +366,9 @@
                                     sameModalityAndBodypart.push(previousReport);
                                 }
 
+                                if(previousReport.opinionApprovedDtime === null)
+                                    return;
+
                                 let approveDtime = previousReport.opinionApprovedDtime;
                                 for (let opinion of previousReport.opinion) {
                                     if(opinion.approveTime === approveDtime) {
