@@ -499,7 +499,16 @@
                         resultOpinion.color = "white";
                     }
 
-                    let approveTime = date2.getFullYear() +"-"+date2.getMonth() +"-"+ date2.getDay()+" "+date2.getHours()+":"+date2.getMinutes();
+                    let aMonth = date2.getMonth();
+                    if(aMonth < 10) aMonth = '0'+aMonth;
+                    let aDay = date2.getDay();
+                    if(aDay < 10) aDay = '0'+aDay;
+                    let aHour = date2.getHours();
+                    if(aHour < 10) aHour = '0'+aHour;
+                    let aMinutes = date2.getMinutes();
+                    if(aMinutes < 10) aMinutes = '0'+aMinutes;
+
+                    let approveTime = date2.getFullYear() +"-"+ aMonth+"-"+ aDay+" "+aHour+":"+aMinutes;
                     let opinionData = "Approved by "+opinion.approver + " at "+ approveTime;
                     let report = "[ STUDY DESCRIPTION ]" + "\n" + reports.studyDescription[0] + "\n\n" + "[ FINDING ]" + "\n" + resultOpinion.finding + "\n\n" + "[ CONCLUSION ]" + "\n" + resultOpinion.conclusion + "\n\n" + "[ RECOMMENDATION ]" + "\n" + resultOpinion.recommendation;
                     resultOpinion.id = reports.id;
