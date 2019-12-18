@@ -460,13 +460,12 @@
                     }
 
                     let ellapsedTime = "";
-                    let date2 = new Date();
                     if(g_SelectedCaseDate){
 
                         let date = new Date(parseInt(g_SelectedCaseDate.opinionApprovedDtime));
                         // console.log(date.getFullYear()+" "+(date.getMonth()+1)+" "+date.getDate());
 
-                        date2 = new Date(parseInt(reports.opinionApprovedDtime));
+                        let date2 = new Date(parseInt(reports.opinionApprovedDtime));
                         // console.log(date2.getFullYear()+" "+(date2.getMonth()+1)+" "+date2.getDate());
 
                         let diff = date2 - date;
@@ -499,22 +498,25 @@
                         resultOpinion.color = "white";
                     }
 
-                    let aMonth = date2.getMonth();
-                    if(aMonth < 10) aMonth = '0'+aMonth;
-                    let aDay = date2.getDay();
-                    if(aDay < 10) aDay = '0'+aDay;
-                    let aHour = date2.getHours();
-                    if(aHour < 10) aHour = '0'+aHour;
-                    let aMinutes = date2.getMinutes();
-                    if(aMinutes < 10) aMinutes = '0'+aMinutes;
-
-                    let approveTime = date2.getFullYear() +"-"+ aMonth+"-"+ aDay+" "+aHour+":"+aMinutes;
-                    let opinionData = "Approved by "+opinion.approver + " at "+ approveTime;
+                    let referralApproveDtime = new Date(parseInt(reports.opinionApprovedDtime));
+                    let opinionData = "Approved by "+opinion.approver + " at "+ this.convertReferralApproveDTime(referralApproveDtime);
                     let report = "[ STUDY DESCRIPTION ]" + "\n" + reports.studyDescription[0] + "\n\n" + "[ FINDING ]" + "\n" + resultOpinion.finding + "\n\n" + "[ CONCLUSION ]" + "\n" + resultOpinion.conclusion + "\n\n" + "[ RECOMMENDATION ]" + "\n" + resultOpinion.recommendation;
                     resultOpinion.id = reports.id;
                     resultOpinion.title = title;
                     resultOpinion.report = opinionData+ "\n\n" +report;
                     return resultOpinion;
+                }
+
+                convertReferralApproveDTime(approveDtime){
+                    let aMonth = approveDtime.getMonth() + 1;
+                    if(parseInt(aMonth) < 10) aMonth = '0'+aMonth;
+                    let aDay = approveDtime.getDate();
+                    if(parseInt(aDay) < 10) aDay = '0'+aDay;
+                    let aHour = approveDtime.getHours();
+                    if(parseInt(aHour) < 10) aHour = '0'+aHour;
+                    let aMinutes = approveDtime.getMinutes();
+                    if(parseInt(aMinutes) < 10) aMinutes = '0'+aMinutes;
+                    return approveDtime.getFullYear() +"-"+ aMonth+"-"+ aDay+" "+aHour+":"+aMinutes;
                 }
 
                 convertTimeFormat(time) {
