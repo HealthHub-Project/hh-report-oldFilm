@@ -167,9 +167,9 @@
                 <div id="fontAsc" on-click="ascSort" readonly><paper-icon-button id="iconAscending" noink icon="vaadin:chevron-down-small" title="oldListSort" class="iconSortBtn" ></paper-icon-button>Descending</div>
                 <div id="fontDsc" on-click="dscSort" readonly hidden="true"><paper-icon-button id="iconDescending" noink icon="vaadin:chevron-up-small" title="oldListSort" class="iconSortBtn" ></paper-icon-button>Ascending</div>
             </div>
-            <div style="height: calc(100% - 25px); display: block;">
+            <div id="oldFilmContainer" style="height: calc(100% - 25px); display: block;">
                 <template is="dom-repeat" items="{{oldfilm}}" id="oldFilmReport">
-                    <div class="class-old-report" index="[[index]]">
+                    <div id="{{item.id}}" class="class-old-report" index="[[index]]">
                         <div class="class-old-report-title" id="oldReportTitle">
                             <input class="class-oldfilm-title" id="oldfilmId" value="{{item.id}}" style="display: none;"/>
                             <input class="class-oldfilm-title" id="oldfilmTitle" value="{{item.title}}" style$="color: {{item.color}}" readonly/>
@@ -797,6 +797,16 @@
                 menuItemListener( link ) {
                     console.log( "Task ID - " + taskItemInContext.getAttribute("data-id") + ", Task action - " + link.getAttribute("data-action"));
                     this.toggleMenuOff();
+                }
+
+                scrollEvent(param) {
+
+                    let rowId = param.id;
+                    let oldFilmContainer = this.$.oldFilmContainer;
+
+                    for(let el of oldFilmContainer.children) {
+                        if(rowId === el.id) el.scrollIntoView(true);
+                    }
                 }
             }
             window.customElements.define(HhReportOldfilm.is, HhReportOldfilm);
