@@ -520,6 +520,8 @@
                 }
 
                 convertTimeFormat(time) {
+                    if(!time) return "00:00:00";
+
                     let hour = time.substring(0,2);
                     let min = time.substring(2,4);
                     let sec = time.substring(4,6);
@@ -529,6 +531,8 @@
                 }
 
                 convertDateFormat(date) {
+                    if(!date) return "0000-00-00";
+
                     let year = date.substring(0,4);
                     let month = date.substring(4,6);
                     let day = date.substring(6,8);
